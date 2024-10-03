@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "next-env.d.ts": true,
+    ".gitignore": true,
+    "tsconfig.json": true,
+    "postcss.config.mjs": true,
+    ".eslintrc.json": true,
+    ".next": true,
+    "next.config.mjs": true,
+    "yarn.lock": true
+  }
+}
