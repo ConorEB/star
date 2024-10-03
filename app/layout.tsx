@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className='bg-shapes font-roobert'
+        className='bg-shapes bg-[#101012] font-roobert'
       >
         {children}
       </body>

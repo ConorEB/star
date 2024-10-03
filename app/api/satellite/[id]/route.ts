@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 
-// API handler function to fetch TLE data
-export async function GET(req: Request) {
-    const apiKey = process.env.N2YO_API_KEY; // Replace with your actual N2YO API key
-    const satelliteId = 25544; // Example satellite: ISS 25544
+// API handler function to fetch TLE data from N2YO API
+export async function GET(req: Request, { params }: { params: { id: string }}) {
+    const { searchParams } = new URL(req.url);
+    const apiKey = process.env.N2YO_API_KEY;
+    const satelliteId = params.id || '25544'; // Example satellite: ISS 25544
 
     try {
         const url = `https://api.n2yo.com/rest/v1/satellite/tle/${satelliteId}&apiKey=${apiKey}`;

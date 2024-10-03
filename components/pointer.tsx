@@ -16,8 +16,6 @@ const SatelliteComponent = ({ azimuthDifference, elevationDifference }) => {
             </div>
 
             <div className="border-4 border-gray-600 rounded-full h-48 w-48 flex items-center justify-center overflow-clip relative">
-
-
                 <div className={`triangle bg-[#00ff73]/70 mb-40 animate-pulse`}></div>
                 <div className='bg-[#00ff73] h-12 w-12 rounded-full absolute z-10 shadow-2xl'></div>
             </div>
