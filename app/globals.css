@@ -25,3 +25,9 @@ body {
     text-wrap: balance;
   }
 }
+
+.triangle {
+  width: 180px;
+  aspect-ratio: 1/cos(30deg);
+  clip-path: polygon(50% 100%,100% 30%,0% 30%);
+}

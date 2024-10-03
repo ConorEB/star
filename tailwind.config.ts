@@ -12,6 +12,13 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        roobert: ['var(--font-roobert)'],
+      },
+      backgroundImage: {
+        shapes:
+          "radial-gradient(circle, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0) 0%), url('../public/shapes-bg.svg')",
+      },
     },
   },
   plugins: [],

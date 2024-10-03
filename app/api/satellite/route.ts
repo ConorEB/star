@@ -1,11 +1,9 @@
-// app/api/satellite/route.ts
-
 import { NextResponse } from 'next/server';
 
 // API handler function to fetch TLE data
 export async function GET(req: Request) {
     const apiKey = process.env.N2YO_API_KEY; // Replace with your actual N2YO API key
-    const satelliteId = 28654; // Example satellite: ISS 25544
+    const satelliteId = 25544; // Example satellite: ISS 25544
 
     try {
         const url = `https://api.n2yo.com/rest/v1/satellite/tle/${satelliteId}&apiKey=${apiKey}`;
