@@ -1,10 +1,10 @@
-const SatelliteComponent = ({ azimuthDifference, elevationDifference }) => {
+const SatelliteComponent = ({ azimuthDifference }) => {
     return (
-        <div className="flex items-center justify-center mt-10">
+        <div className="flex items-center justify-center">
             <div
                 className='absolute w-28 h-28 z-10 transform -translate-x-1/2'
                 style={{
-                    transform: `rotate(${azimuthDifference.toFixed(2) - 55}deg) translateX(100%)`,
+                    transform: `rotate(${azimuthDifference.toFixed(1) - 55}deg) translateX(100%)`,
                 }}
             >
                 <div className='flex items-center'>

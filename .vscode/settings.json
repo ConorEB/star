@@ -6,7 +6,7 @@
     "postcss.config.mjs": true,
     ".eslintrc.json": true,
     ".next": true,
-    "next.config.mjs": true,
+    "next.config.mjs": false,
     "yarn.lock": true,
     "node_modules": true
   }

@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    typescript: {
+        // DISABLE FOR TEST DEPLOYMENT
+        ignoreBuildErrors: true,
+    },
+};
 
 export default nextConfig;

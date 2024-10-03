@@ -20,6 +20,5 @@ export const predictSatellitePosition = (tle1, tle2, date, observerCoords) => {
         return {
             azimuth: satellite.radiansToDegrees(lookAngles.azimuth),
             elevation: satellite.radiansToDegrees(lookAngles.elevation),
-            range: lookAngles.rangeSat,
         };
     };

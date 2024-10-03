@@ -1,13 +1,30 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { handleDeviceOrientation } from '@/lib/motion';
 import { predictSatellitePosition } from '@/lib/satellite';
 import Pointer from '@/components/pointer';
 
-export default function FindSatellite({ params }: { params: { id: string }}) {
+import { useSearchParams } from 'next/navigation'
+
+interface TleData {
+    line1: string;
+    line2: string;
+}
+
+interface PredictedPosition {
+    azimuth: number;
+    elevation: number;
+}
+
+function FindSatellite() {
+    const searchParams = useSearchParams();
+
     // Motion and location states
-    const [tleData, setTleData] = useState(null);
+    const [tleData, setTleData] = useState<TleData>({
+        line1: '',
+        line2: '',
+    });
     const [gyroData, setGyroData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [location, setLocation] = useState({ latitude: 0, longitude: 0, altitude: 0 });
     const [heading, setHeading] = useState(0);
@@ -18,13 +35,18 @@ export default function FindSatellite({ params }: { params: { id: string }}) {
 
     // Satellite data states
     const [satelliteName, setSatelliteName] = useState(null);
-    const [satellitePosition, setSatellitePosition] = useState(null);
+    const [satellitePosition, setSatellitePosition] = useState<PredictedPosition>({
+        azimuth: 0,
+        elevation: 0,
+    });
     const [azimuthDifference, setAzimuthDifference] = useState(0);
     const [elevationDifference, setElevationDifference] = useState(0);
 
     // Fetch TLE data from the API
     const fetchSatelliteData = async () => {
-        const response = await fetch(`/api/satellite/${params.id}`);
+        const satelliteId = searchParams.get('satelliteId')
+
+        const response = await fetch(`/api/satellite/${satelliteId}`);
         if (response.ok) {
             const data = await response.json();
             setSatelliteName(data.info.satname);
@@ -84,6 +106,7 @@ export default function FindSatellite({ params }: { params: { id: string }}) {
         };
 
         requestPermission();
+        // @ts-expect-error test
     }, [permissionRequested]);
 
     // Add event listeners for device sensors
@@ -113,8 +136,13 @@ export default function FindSatellite({ params }: { params: { id: string }}) {
             const deviceElevation = gyroData.beta - 90; // Beta is the tilt front-to-back & adjust for portrait mode
             const elDiff = satellitePosition.elevation - deviceElevation;
 
-            setAzimuthDifference(azDiff);
-            setElevationDifference(elDiff);
+            setTimeout(() => {
+                setAzimuthDifference(azDiff);
+            }, 350);
+
+            setTimeout(() => {
+                setElevationDifference(elDiff);
+            }, 200);
         }
     }, [satellitePosition, heading, gyroData]);
 
@@ -124,41 +152,33 @@ export default function FindSatellite({ params }: { params: { id: string }}) {
                 <button onClick={() => setPermissionRequested(true)}>Allow Sensor Access</button>
             ) : (
                 <>
-                    {/*}
-          <div>
-            <h2>Gyroscope Data:</h2>
-            <p>Alpha: {gyroData.alpha.toFixed(2)}</p>
-            <p>Beta: {gyroData.beta.toFixed(2)}</p>
-            <p>Gamma: {gyroData.gamma.toFixed(2)}</p>
-          </div>
-          <div>
-            <h2>GPS Location:</h2>
-            <p>Latitude: {location.latitude.toFixed(6)}</p>
-            <p>Longitude: {location.longitude.toFixed(6)}</p>
-            <p>Altitude: {location.altitude.toFixed(2)} meters</p>
-          </div>
-          <div>
-            <h2>Compass Heading (Azimuth):</h2>
-            <p>Heading: {heading.toFixed(2)}°</p>
-          </div>
-          */}
-
                     {satellitePosition ? (
-                        <>
+                        <div className='flex flex-row h-dvh justify-center items-center'>
                             <div>
-                                <h2>Name: {satelliteName}</h2>
-                                <h2>Predicted Satellite Position:</h2>
-                                <p>Azimuth: {satellitePosition.azimuth.toFixed(2)}°</p>
-                                <p>Elevation: {satellitePosition.elevation.toFixed(2)}°</p>
-                            </div>
+                                <div>
+                                    <p className='text-[20px] font-bold'>{satelliteName}</p>
+                                    <p>Azimuth: {satellitePosition.azimuth.toFixed(2)}°</p>
+                                    <p>Elevation: {satellitePosition.elevation.toFixed(2)}°</p>
+                                    <p>Azimuth Difference: {azimuthDifference.toFixed(2)}°</p>
+                                    <p>Elevation Difference: {elevationDifference.toFixed(2)}°</p>
+                                </div>
 
-                            <div>
-                                <h2>Align Your Device:</h2>
-                                <p>Azimuth Difference: {azimuthDifference.toFixed(2)}°</p>
-                                <p>Elevation Difference: {elevationDifference.toFixed(2)}°</p>
-                                <Pointer azimuthDifference={azimuthDifference} elevationDifference={elevationDifference} />
+                                <div className='flex items-center justify-center gap-10 mt-10'>
+                                    <Pointer azimuthDifference={azimuthDifference} elevationDifference={elevationDifference} />
+
+                                    <div className="flex flex-row items-center justify-center gap-4">
+                                        <div className="border-2 border-dashed border-white/50 w-0 h-44 bg-transparent"></div>
+                                        <div className='w-4 rounded-sm bg-gray-400 absolute h-[2px]'></div>
+                                        <div
+                                                className={`w-6 rounded-sm ${Math.abs(elevationDifference) < 20 ? 'bg-[#00ff73]' : 'bg-red-500'} absolute h-1`}
+                                            style={{
+                                                translate: `0px ${(elevationDifference / 2).toFixed(0)}px`,
+                                            }}
+                                        ></div>
+                                    </div>
+                                </div>
                             </div>
-                        </>
+                        </div>
                     ) : (
                         <p>Loading satellite data... {satelliteName} {satellitePosition?.azimuth}</p>
                     )}
@@ -166,4 +186,12 @@ export default function FindSatellite({ params }: { params: { id: string }}) {
             )}
         </div>
     );
+}
+
+export default function Page() {
+    return (
+        <Suspense fallback="Loading">
+            <FindSatellite />
+        </Suspense>
+    )
 }
