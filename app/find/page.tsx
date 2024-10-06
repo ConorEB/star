@@ -48,7 +48,7 @@ function FindSatellite() {
     const [satData, setSatData] = useState<SatelliteData>(initSatData);
 
     // Connection state
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<null | string>(null);
     const [connectionData, setConnectionData] = useState<ConnectionData>(initConnectionData)
 
     // Fetch TLE data from the API
