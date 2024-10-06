@@ -35,9 +35,9 @@ const DirectionGuide = ({ satData }: { satData: SatelliteData }) => {
                 <div className="border-2 border-dashed border-white/50 w-0 h-44 bg-transparent"></div>
                 <div className='w-4 rounded-sm bg-gray-400 absolute h-[2px]'></div>
                 <div
-                    className={`w-7 rounded-sm ${Math.abs(satData.elevationDifference) < 20 ? 'bg-[#00ff73]' : 'bg-red-500'} absolute h-1`}
+                    className={`w-7 rounded-sm ${Math.abs(satData.elevationDifference) < 15 ? 'bg-[#00ff73]' : 'bg-red-500'} absolute h-1`}
                     style={{
-                        translate: `0px ${((satData.elevationDifference)).toFixed(0)}px`,
+                        translate: `0px ${calcEleveationTranslate(satData.elevationDifference).toFixed(0)}px`,
                     }}
                 ></div>
             </div>
@@ -45,5 +45,11 @@ const DirectionGuide = ({ satData }: { satData: SatelliteData }) => {
 
     );
 };
+
+const calcEleveationTranslate = (elevation: number) => {
+    if (elevation < 0) return 1 * (elevation / 1.4);
+    if (elevation > 0) return -1 * (elevation / 1.4);
+    return 0;
+}
 
 export default DirectionGuide;

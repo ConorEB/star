@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { handleDeviceOrientation } from '@/lib/motion';
 import { calculateNextPass, predictSatellitePosition } from '@/lib/satellite';
 import DirectionGuide from '@/components/direction-guide';
@@ -10,15 +10,34 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Loader from '@/components/loader';
 
+const initMotionData = {
+    location: { latitude: 0, longitude: 0, altitude: 0 },
+    gyroscope: { alpha: 0, beta: 0, gamma: 0 },
+    heading: 0
+};
+
+const initSatData = {
+    name: '',
+    position: { azimuth: 0, elevation: 0 },
+    nextPass: null,
+    azimuthDifference: 0,
+    elevationDifference: 0,
+    tle: {
+        line1: '',
+        line2: ''
+    }
+};
+
+const initConnectionData = {
+    connected: true,
+    message: 'Please redirect your antenna.'
+}
+
 function FindSatellite() {
     const searchParams = useSearchParams();
 
     // Motion and location states
-    const [motionData, setMotionData] = useState<MotionData>({
-        location: { latitude: 0, longitude: 0, altitude: 0 },
-        gyroscope: { alpha: 0, beta: 0, gamma: 0 },
-        heading: 0
-    });
+    const [motionData, setMotionData] = useState<MotionData>(initMotionData);
 
     // Permission states
     const [permissionRequested, setPermissionRequested] = useState(false);
@@ -26,45 +45,29 @@ function FindSatellite() {
 
     // Satellite data states
     const [showData, setShowData] = useState(true);
-    const [satData, setSatData] = useState<SatelliteData>({
-        name: '',
-        position: { azimuth: 0, elevation: 0 },
-        nextPass: null,
-        azimuthDifference: 0,
-        elevationDifference: 0,
-        tle: {
-            line1: '',
-            line2: ''
-        }
-    });
+    const [satData, setSatData] = useState<SatelliteData>(initSatData);
 
     // Connection state
-    const [connectionData, setConnectionData] = useState<ConnectionData>({
-        connected: true,
-        message: 'Please redirect your antenna.'
-    })
+    const [connectionData, setConnectionData] = useState<ConnectionData>(initConnectionData)
 
     // Fetch TLE data from the API
-    const fetchSatelliteData = async () => {
-        const satelliteId = searchParams.get('satelliteId')
+    const fetchSatelliteData = useCallback(async () => {
+        const satelliteId = searchParams.get('satelliteId');
 
         const response = await fetch(`/api/satellite/${satelliteId}`);
         if (response.ok) {
             const data = await response.json();
             const tleLines = data.tle.split('\r\n'); // Split TLE into two lines
 
-            setSatData({
+            setSatData((prevSatData: SatelliteData) => ({
+                ...prevSatData,
                 name: data.info.satname,
-                position: { azimuth: 0, elevation: 0 },
                 tle: { line1: tleLines[0], line2: tleLines[1] },
-                nextPass: null,
-                azimuthDifference: 0,
-                elevationDifference: 0,
-            });
+            }));
         } else {
             alert('Failed to fetch TLE data');
         }
-    };
+    }, [searchParams]);
 
     // Update satellite position from TLE data every second
     useEffect(() => {
@@ -78,19 +81,22 @@ function FindSatellite() {
                     motionData.location
                 );
 
-                setSatData({
-                    ...satData,
+                setSatData((prevSatData: SatelliteData) => ({
+                    ...prevSatData,
                     position: predictedPosition,
-                });
+                }));
             }, 1000); // Update every second for smoother movement
 
             // Calculate the next pass on initial load
             const nextPass = calculateNextPass(satData.tle, motionData.location);
-            setSatData({ ...satData, nextPass });
+            setSatData((prevSatData: SatelliteData) => ({
+                ...prevSatData,
+                nextPass,
+            }));
 
             return () => clearInterval(intervalId);
         }
-    }, [satData.tle?.line1, motionData.location?.longitude]);
+    }, [satData.tle, motionData.location]);
 
     // Request permission for device sensors and fetch TLE data once
     useEffect(() => {
@@ -111,33 +117,37 @@ function FindSatellite() {
                     alert('Error requesting permission:' + error);
                 }
             } else {
-                //alert("no motion event available")
-                setPermissionGranted(true);
-                fetchSatelliteData(); // Fetch TLE data directly if no permission is required
+                alert("Please use a mobile device to access this feature. This device does not support motion sensors.");
+                //setPermissionGranted(true);
+                //fetchSatelliteData(); // Fetch TLE data directly if no permission is required
             }
         };
 
         if (permissionRequested) requestPermission();
-    }, [permissionRequested]);
+    }, [permissionRequested, fetchSatelliteData]);
 
     // Add event listeners for device sensors
+    const handleDeviceOrientationEvent = (event: OrientationEvent) => handleDeviceOrientation(event, setMotionData);
+
     useEffect(() => {
         if (permissionGranted) {
-            // @ts-expect-error Does not expect iOS heading value in type
-            window.addEventListener('deviceorientation', (event) => handleDeviceOrientation(event, setMotionData));
+            // @ts-expect-error I'll fix later
+            window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
+
             navigator.geolocation.watchPosition((position) => {
                 const { latitude, longitude, altitude } = position.coords;
-                setMotionData({
-                    ...motionData,
-                    // @ts-expect-error I'll fix this later
+
+                // @ts-expect-error I'll fix this later
+                setMotionData((prevMotionData) => ({
+                    ...prevMotionData,
                     location: { latitude, longitude, altitude }
-                });
+                }));
             });
         }
 
         return () => {
-            // @ts-expect-error No overload matches this call
-            window.removeEventListener('deviceorientation', handleDeviceOrientation);
+            // @ts-expect-error I'll fix later
+            window.removeEventListener('deviceorientation', handleDeviceOrientationEvent);
         };
     }, [permissionGranted]);
 
@@ -150,31 +160,42 @@ function FindSatellite() {
             if (azDiff < -180) azDiff += 360;
 
             // Compute elevation difference
-            const deviceElevation = motionData.gyroscope.beta;
-            const elDiff = satData.position.elevation - deviceElevation;
+            const elDiff = satData.position.elevation - motionData.gyroscope.beta;
 
             setTimeout(() => {
-                setSatData({
-                    ...satData,
+                setSatData((prevSatData: SatelliteData) => ({
+                    ...prevSatData,
                     azimuthDifference: azDiff,
-                });
-            }, 350);
-
-            setTimeout(() => {
-                setSatData({
-                    ...satData,
                     elevationDifference: elDiff,
-                });
+                }));
             }, 200);
 
             // Check if the user is pointing at the satellite
             if (Math.abs(azDiff) < 5 && Math.abs(elDiff) < 5) {
-                setConnectionData({ connected: true, message: 'Connected' });
+                setConnectionData({ connected: true, message: 'Keep pointing at satellite.' });
             } else {
-                setConnectionData({ connected: false, message: 'Not Connected' });
+                let message = "";
+
+                // Add azimuth directions to message
+                if (azDiff > 5) {
+                    message += 'Move antenna to the right';
+                } else if (azDiff < 5) {
+                    message += 'Move antenna to the left';
+                }
+
+                // Add elevation directions to message
+                if (elDiff > 5) {
+                    message += ' and up';
+                } else if (elDiff < 5) {
+                    message += ' and down';
+                } else {
+                    message += '.';
+                }
+
+                setConnectionData({ connected: false, message });
             }
         }
-    }, [satData.position, motionData.heading, motionData.gyroscope]);
+    }, [satData.position, motionData.heading, motionData.gyroscope.beta]);
 
     // Show permission request UI if motion permission not allowed
     if (!permissionGranted) {
@@ -198,9 +219,7 @@ function FindSatellite() {
     // If still calculating satellite poisition data
     if (!satData.position) {
         return (
-            <div className='flex justify-center items-center h-dvh px-8'>
-                <Loader />
-            </div>
+            <Loader />
         )
     }
 
@@ -223,8 +242,9 @@ function FindSatellite() {
                     <div>Next Pass: {satData.nextPass?.toLocaleString() || 'Calculating...'}</div>
                     <p>Azimuth: {satData.position.azimuth.toFixed(2)}°</p>
                     <p>Elevation: {satData.position.elevation.toFixed(2)}°</p>
-                    <p>Azimuth Difference: {satData.azimuthDifference.toFixed(2)}°</p>
-                    <p>Elevation Difference: {satData.elevationDifference.toFixed(2)}°</p>
+                    <p>Azimuth Difference: {satData.azimuthDifference.toFixed(1)}°</p>
+                    <p>Elevation Difference: {satData.elevationDifference.toFixed(1)}°</p>
+
 
                     <div className='w-full h-[2px] bg-white/50 rounded-full mt-4' />
                 </div>
