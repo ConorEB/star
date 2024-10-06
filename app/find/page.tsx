@@ -29,7 +29,7 @@ const initSatData = {
 };
 
 const initConnectionData = {
-    connected: true,
+    connected: false,
     message: 'Please redirect your antenna.'
 }
 
@@ -171,25 +171,34 @@ function FindSatellite() {
             }, 200);
 
             // Check if the user is pointing at the satellite
-            if (Math.abs(azDiff) < 10 || Math.abs(elDiff) < 10) {
+            if (Math.abs(azDiff) < 10 && Math.abs(elDiff) < 10) {
                 setConnectionData({ connected: true, message: 'Keep pointing at satellite.' });
             } else {
-                let message = "";
+                let message = 'Move antenna';
+                const azThreshold = 10;
+                const elThreshold = 10;
 
-                // Add azimuth directions to message
-                if (azDiff > 10) {
-                    message += 'Move antenna to the left';
-                } else if (azDiff < 10) {
-                    message += 'Move antenna to the right';
+                let directions = [];
+
+                // Determine azimuth adjustment
+                if (azDiff > azThreshold) {
+                    directions.push('to the left');
+                } else if (azDiff < -azThreshold) {
+                    directions.push('to the right');
                 }
 
-                // Add elevation directions to message
-                if (elDiff > 10) {
-                    message += ' and up';
-                } else if (elDiff < 10) {
-                    message += ' and down';
+                // Determine elevation adjustment
+                if (elDiff > elThreshold) {
+                    directions.push('up');
+                } else if (elDiff < -elThreshold) {
+                    directions.push('down');
+                }
+
+                // Build the final message
+                if (directions.length > 0) {
+                    message += ' ' + directions.join(' and ') + '.';
                 } else {
-                    message += '.';
+                    message = 'Antenna is aligned.';
                 }
 
                 setConnectionData({ connected: false, message });
