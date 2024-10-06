@@ -47,8 +47,8 @@ const DirectionGuide = ({ satData }: { satData: SatelliteData }) => {
 };
 
 const calcEleveationTranslate = (elevation: number) => {
-    if (elevation < 0) return 1 * (elevation / 1.4);
-    if (elevation > 0) return -1 * (elevation / 1.4);
+    if (elevation < 0) return (elevation / 1.4);
+    if (elevation > 0) return (elevation / 1.4);
     return 0;
 }
 

@@ -117,9 +117,9 @@ function FindSatellite() {
                     alert('Error requesting permission:' + error);
                 }
             } else {
-                alert("Please use a mobile device to access this feature. This device does not support motion sensors.");
-                //setPermissionGranted(true);
-                //fetchSatelliteData(); // Fetch TLE data directly if no permission is required
+                //alert("Please use a mobile device to access this feature. This device does not support motion sensors.");
+                setPermissionGranted(true);
+                fetchSatelliteData(); // Fetch TLE data directly if no permission is required
             }
         };
 
@@ -171,22 +171,22 @@ function FindSatellite() {
             }, 200);
 
             // Check if the user is pointing at the satellite
-            if (Math.abs(azDiff) < 5 && Math.abs(elDiff) < 5) {
+            if (Math.abs(azDiff) < 10 || Math.abs(elDiff) < 10) {
                 setConnectionData({ connected: true, message: 'Keep pointing at satellite.' });
             } else {
                 let message = "";
 
                 // Add azimuth directions to message
-                if (azDiff > 5) {
-                    message += 'Move antenna to the right';
-                } else if (azDiff < 5) {
+                if (azDiff > 10) {
                     message += 'Move antenna to the left';
+                } else if (azDiff < 10) {
+                    message += 'Move antenna to the right';
                 }
 
                 // Add elevation directions to message
-                if (elDiff > 5) {
+                if (elDiff > 10) {
                     message += ' and up';
-                } else if (elDiff < 5) {
+                } else if (elDiff < 10) {
                     message += ' and down';
                 } else {
                     message += '.';
