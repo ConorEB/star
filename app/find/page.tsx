@@ -175,16 +175,16 @@ function FindSatellite() {
                 setConnectionData({ connected: true, message: 'Keep pointing at satellite.' });
             } else {
                 let message = 'Move antenna';
-                const azThreshold = 10;
-                const elThreshold = 10;
+                const azThreshold = 15;
+                const elThreshold = 15;
 
                 const directions = [];
 
                 // Determine azimuth adjustment
                 if (azDiff > azThreshold) {
-                    directions.push('to the left');
-                } else if (azDiff < -azThreshold) {
                     directions.push('to the right');
+                } else if (azDiff < -azThreshold) {
+                    directions.push('to the left');
                 }
 
                 // Determine elevation adjustment
