@@ -117,9 +117,9 @@ function FindSatellite() {
                     alert('Error requesting permission:' + error);
                 }
             } else {
-                //alert("Please use a mobile device to access this feature. This device does not support motion sensors.");
-                setPermissionGranted(true);
-                fetchSatelliteData(); // Fetch TLE data directly if no permission is required
+                alert("Please use a mobile device to access this feature. This device does not support motion sensors.");
+                //setPermissionGranted(true);
+                //fetchSatelliteData(); // Fetch TLE data directly if no permission is required
             }
         };
 

@@ -31,9 +31,9 @@ export default function Home() {
           <Link href={'/guide'} className='bg-black border-white/50 border-2 font-medium rounded-md w-48 h-12 mt-4 flex justify-center hover:border-white/80 items-center hover:cursor-pointer hover:translate-y-[-2px] duration-150'>User Guide</Link>
         </div>
 
-        <div className='flex-row gap-4 hidden md:flex'>
-          <Image src={'/antenna.jpeg'} className='rounded-md border-2 border-white/80' width={200} height={200} alt='Antenna' />
-          <Image src={'/weather.png'} className='rounded-md border-2 border-white/80' width={200} height={200} alt='Antenna' />
+        <div className='flex-row gap-6 hidden md:flex'>
+          <Image src={'/weather.png'} className='rounded-md border-2 border-white/80' width={200} height={150} alt='Antenna' />
+          <Image src={'/guide.png'} className='rounded-md border-2 border-white/80' width={150} height={150} alt='Antenna' />
         </div>
       </div>
   );
