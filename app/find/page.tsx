@@ -48,6 +48,7 @@ function FindSatellite() {
     const [satData, setSatData] = useState<SatelliteData>(initSatData);
 
     // Connection state
+    const [error, setError] = useState("test");
     const [connectionData, setConnectionData] = useState<ConnectionData>(initConnectionData)
 
     // Fetch TLE data from the API
@@ -65,7 +66,7 @@ function FindSatellite() {
                 tle: { line1: tleLines[0], line2: tleLines[1] },
             }));
         } else {
-            alert('Failed to fetch TLE data');
+            setError('Failed to fetch satellite data. Make sure the NORAD ID: ' + satelliteId + ' is correct.');
         }
     }, [searchParams]);
 
@@ -113,11 +114,11 @@ function FindSatellite() {
                         setPermissionGranted(true);
                         fetchSatelliteData(); // Fetch TLE data once after permission is granted
                     }
-                } catch (error) {
-                    alert('Error requesting permission:' + error);
+                } catch {
+                    setError('Failed to request permission for motion sensors.');
                 }
             } else {
-                alert("Please use a mobile device to access this feature. This device does not support motion sensors.");
+                setError("Please use a mobile device to access this feature. This device does not support motion sensors.");
                 //setPermissionGranted(true);
                 //fetchSatelliteData(); // Fetch TLE data directly if no permission is required
             }
@@ -173,6 +174,8 @@ function FindSatellite() {
             // Check if the user is pointing at the satellite
             if (Math.abs(azDiff) < 10 && Math.abs(elDiff) < 10) {
                 setConnectionData({ connected: true, message: 'Keep pointing at satellite.' });
+            } else if (satData.position.elevation < 0) {
+                setConnectionData({ connected: false, message: 'Satellite is below the horizon, check next pass.' });
             } else {
                 let message = 'Move antenna';
                 const azThreshold = 15;
@@ -206,27 +209,40 @@ function FindSatellite() {
         }
     }, [satData.position, motionData.heading, motionData.gyroscope.beta]);
 
+    // Show error screen
+    if (error) {
+        return (
+            <div className='flex justify-center items-center h-dvh'>
+                <div className='md:w-1/2 px-8'>
+                    <p className='font-medium text-[25px]'>👎 There was an error.</p>
+                    <p className='text-white/80 mt-2'>{error}</p>
+                    <Link href={'/'} className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer hover:translate-y-[-2px] duration-150'>Try Again</Link>
+                </div>
+            </div>
+        )
+    }
+
     // Show permission request UI if motion permission not allowed
     if (!permissionGranted) {
         return (
             <div className='flex justify-center items-center h-dvh px-8'>
                 <div className='md:w-1/2'>
-                    <p className='font-semibold text-[30px]'>🚀 Device Motion Needed</p>
-                    <p className='text-white/80 mt-2'>{`I need to access your device's motion sensors like the gyroscope to be able to tell you where to point your phone (and antenna) at the satellite.`}</p>
+                    <p className='font-medium text-[25px]'>🚀 Device Motion & Location Needed</p>
+                    <p className='text-white/80 mt-2'>{`I need to access your device's motion sensors like the gyroscope and location to be able to tell you where to point your phone (and antenna) at the satellite.`}</p>
                     <div
-                        className='bg-blue-600 border-2 mt-4 border-white/50 w-48 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer'
+                        className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer'
                         onClick={() => setPermissionRequested(true)}
-                    >Allow motion access</div>
+                    >Allow access</div>
 
                     <p className='text-white/80 mt-6'>PS: After clicking the above button, your device will prompt you to confirm like the image below. Please press yes!</p>
-                    <Image src='/motion-permission.png' width={250} height={250} className='rounded-md border-2 mt-4 border-white/80' alt='Motion Permission' />
+                    <Image src='/motion-request.jpeg' width={250} height={250} className='rounded-md border-2 mt-4 border-white/80' alt='Motion Permission' />
                 </div>
             </div>
         )
     }
 
     // If still calculating satellite poisition data
-    if (!satData.position) {
+    if (!satData.position || satData.position?.azimuth == 0) {
         return (
             <Loader />
         )
@@ -259,7 +275,7 @@ function FindSatellite() {
                 </div>
 
                 <div>
-                    <p className={`${connectionData.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-semibold`}>{connectionData.connected ? 'CONNECTED' : 'LOST SIGNAL'}</p>
+                    <p className={`${connectionData.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}>{connectionData.connected ? 'CONNECTED' : 'LOST SIGNAL'}</p>
                     <p className='pt-1'>{connectionData.message}</p>
                 </div>
 

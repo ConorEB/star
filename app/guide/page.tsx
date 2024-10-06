@@ -33,7 +33,7 @@ function Guide() {
                 <p className="text-white/80 pt-6 font-medium text-[20px]">FAQ.</p>
                 <div className="w-40 h-[2px] bg-white/30 rounded-full mt-1 mb-1" />
                 <p className="pt-4">Can I use this on a computer?</p>
-                <p className="text-white/70">{`Unfortunately not. You need motion sensors which computers don't share.`}</p>
+                <p className="text-white/70">{`Unfortunately not. You need motion sensors which computers don't share as web APIs.`}</p>
 
                 <p className="pt-4">I have an issue/bug to report</p>
                 <p className="text-white/70">Sorry about that, STAR is still a work in progress. Please let me know using the email below!</p>

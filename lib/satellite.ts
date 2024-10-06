@@ -38,7 +38,7 @@ export const calculateNextPass = (tle: TleData, observerCoords: UserLocation): D
         const positionAndVelocity = satellite.propagate(satrec, passTime);
 
         const positionEci = positionAndVelocity.position;
-        const gmst = satellite.gstime(new Date());
+        const gmst = satellite.gstime(passTime);
         // @ts-expect-error ???
         const positionEcf = satellite.eciToEcf(positionEci, gmst);
 
