@@ -252,10 +252,10 @@ function FindSatellite() {
         <div className='flex flex-row h-dvh justify-center items-center px-8'>
             <div>
                 <div className='flex gap-4'>
-                    <Link href={'/'} className='bg-gray-800 border-2 border-white/50 w-24 py-1 font-medium rounded-md flex items-center justify-center cursor-pointer'>
+                    <Link href={'/'} className='bg-gray-800 border-2 border-white/50 w-24 py-1 font-medium rounded-md flex items-center justify-center cursor-pointer hover:translate-y-[-2px] duration-150'>
                         ← Back
                     </Link>
-                    <div className='bg-blue-600 border-2 border-white/50 w-32 py-1 font-medium flex items-center justify-center rounded-md cursor-pointer'
+                    <div className='bg-blue-600 border-2 border-white/50 w-32 py-1 font-medium flex items-center justify-center rounded-md cursor-pointer hover:translate-y-[-2px] duration-150'
                         onClick={() => setShowData(!showData)}
                     >
                         {showData ? 'Hide Data' : 'Show Data'}
