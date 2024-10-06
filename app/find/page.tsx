@@ -178,7 +178,7 @@ function FindSatellite() {
                 const azThreshold = 10;
                 const elThreshold = 10;
 
-                let directions = [];
+                const directions = [];
 
                 // Determine azimuth adjustment
                 if (azDiff > azThreshold) {
