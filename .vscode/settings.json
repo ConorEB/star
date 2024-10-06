@@ -9,5 +9,4 @@
     "next.config.mjs": false,
     "yarn.lock": true,
     "node_modules": true
-  }
-}
+  },}

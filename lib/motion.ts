@@ -1,5 +1,6 @@
 // Device orientation and motion handlers
-export const handleDeviceOrientation = (event, setGyroData, setHeading) => {
+// @ts-expect-error setMotionData is a function
+export const handleDeviceOrientation = (event: OrientationEvent, setMotionData) => {
     const { alpha, beta, gamma, webkitCompassHeading } = event;
 
     // Calculate the device's heading (azimuth)
@@ -12,11 +13,10 @@ export const handleDeviceOrientation = (event, setGyroData, setHeading) => {
 
     headingValue = headingValue % 360; // Ensure the heading is between 0 and 360
 
-    setGyroData({
-        alpha: alpha || 0,
-        beta: beta || 0,
-        gamma: gamma || 0,
-    });
-
-    setHeading(headingValue);
+    setMotionData((prevData: MotionData) => ({
+        ...prevData,
+        heading: headingValue,
+        gryoscope: { alpha, beta, gamma }
+    })
+    )
 };

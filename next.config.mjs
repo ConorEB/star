@@ -2,7 +2,7 @@
 const nextConfig = {
     typescript: {
         // DISABLE FOR TEST DEPLOYMENT
-        ignoreBuildErrors: true,
+        ignoreBuildErrors: false,
     },
 };
 

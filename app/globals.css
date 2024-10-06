@@ -27,7 +27,11 @@ body {
 }
 
 .triangle {
-  width: 180px;
-  aspect-ratio: 1/cos(30deg);
+  width: 170px;
+  aspect-ratio: 1/cos(35deg);
   clip-path: polygon(50% 100%,100% 30%,0% 30%);
+}
+
+.clip-path {
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
 }
