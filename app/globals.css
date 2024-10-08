@@ -35,3 +35,19 @@ body {
 .clip-path {
   clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
 }
+
+input::placeholder {
+  color: white;
+  font-size: 15px;
+  opacity: 0.85; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Edge 12 -18 */
+  color: white;
+  font-size: 15px;
+  opacity: 0.85;
+}
+
+input {
+  color: white;
+}

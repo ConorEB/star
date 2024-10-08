@@ -13,11 +13,11 @@ export default function Home() {
 
           <form className='flex flex-wrap items-center gap-4 mt-6' action='/find' method='get'>
             <input
-              className='pl-2 h-12 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/50'
+              className='pl-2 h-12 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white text-[18px]'
               type='text'
               name='satelliteId'
               inputMode='numeric'
-              placeholder='Satellite NORAD ID'
+              placeholder='Enter NORAD ID'
               required
             />
             <button
