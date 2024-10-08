@@ -153,19 +153,19 @@ function FindSatellite() {
             }, (error) => {
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
-                        setError('Failed to get location data. Please allow location services in browser settings.');
+                        setError('Failed to get location data. Please allow location services in browser settings. Message from system: ' + error.message);
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        setError('Failed to get location data. Location information is unavailable.');
+                        setError('Failed to get location data. Location information is unavailable. Message from system: ' + error.message);
                         break;
                     case error.TIMEOUT:
-                        setError('Failed to get location data. Request timed out.');
+                        setError('Failed to get location data. Request timed out. Message from system: ' + error.message);
                         break;
                     default:
-                        setError('Failed to get location data. An unknown error occurred.');
+                        setError('Failed to get location data. An unknown error occurred. Message from system: ' + error.message);
                         break;
                 }
-            }, { timeout: 8000 });
+            }, { timeout: 8000, enableHighAccuracy: true, maximumAge: 0 });
         }
 
         return () => {
@@ -291,7 +291,6 @@ function FindSatellite() {
                     <p>Elevation: {satData.position.elevation.toFixed(2)}°</p>
                     <p>Azimuth Difference: {satData.azimuthDifference.toFixed(1)}°</p>
                     <p>Elevation Difference: {satData.elevationDifference.toFixed(1)}°</p>
-
 
                     <div className='w-full h-[2px] bg-white/50 rounded-full mt-4' />
                 </div>
