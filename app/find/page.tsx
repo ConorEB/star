@@ -58,10 +58,9 @@ function FindSatellite() {
         const response = await fetch(`/api/satellite/${satelliteId}`);
         if (response.ok) {
             const data = await response.json();
-            console.log(data)
             const tleLines = data.tle.split('\r\n'); // Split TLE into two lines
 
-            if (tleLines.length !== 2) {
+            if (tleLines.length !== 2 || !data.info.satname) {
                 setError('Failed to fetch satellite data. Make sure the NORAD ID: ' + satelliteId + ' is correct.');
                 return;
             }
@@ -150,8 +149,8 @@ function FindSatellite() {
                     location: { latitude, longitude, altitude }
                 }));
             }, () => {
-                setError('Failed to get location data. Please enable location services for your web browser.');
-            });
+                setError('Failed to get location data. Please make sure location services is enabled for your browser in settings.');
+            }, { timeout: 4000 });
         }
 
         return () => {

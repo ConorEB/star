@@ -12,7 +12,7 @@ function Guide() {
                 <p className="text-white/80 pt-4 font-medium text-[20px]">Introduction.</p>
                 <div className="w-40 h-[2px] bg-white/30 rounded-full mt-1 mb-1" />
 
-                <p className="pt-4">{`STAR is a web interface that uses your device's motion sensors to align your phone (and antenna) with a specified satellite. It was designed and developed for both beginners and advanced users - employing a similar to design language to`} <Link href={'https://support.apple.com/en-us/101573'} className="text-blue-300">{`Apple's satellite SOS`}</Link></p>
+                <p className="pt-4">{`STAR is a web interface that uses your device's motion sensors to align your phone (and antenna) with a specified satellite. It was designed and developed for both beginners and advanced users - employing a similar design language to`} <Link href={'https://support.apple.com/en-us/101573'} className="text-blue-300">{`Apple's satellite SOS`}</Link></p>
 
                 <div className='gap-4 flex flex-wrap flex-row pt-4'>
                     <Image src={'/weather.png'} className='rounded-md border-2 border-white/80' width={200} height={200} alt='Weather' />
