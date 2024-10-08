@@ -258,7 +258,7 @@ function FindSatellite() {
             <div className='flex justify-center items-center h-dvh px-8'>
                 <div className='md:w-1/2'>
                     <p className='font-medium text-[25px]'>🌎 Error accessing device location.</p>
-                    <p className='text-white/80 mt-2'>{`Please check that location permissions are enabled for this browser's settings. Otherwise manually input latitude & longitude values. Error: ${locationError}`}</p>
+                    <p className='text-white/80 mt-2'>{`Please check that location permissions are enabled for this browser's settings. Otherwise manually input latitude & longitude values (reminder to include a negative sign if needed). Error: ${locationError}`}</p>
                     
                     <input
                         className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
