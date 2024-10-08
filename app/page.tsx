@@ -17,7 +17,7 @@ export default function Home() {
               type='text'
               name='satelliteId'
               inputMode='numeric'
-              placeholder='Enter NORAD ID'
+              placeholder='Satellite NORAD ID'
               required
             />
             <button
