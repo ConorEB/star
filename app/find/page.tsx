@@ -120,6 +120,7 @@ function FindSatellite() {
                         fetchSatelliteData(); // Fetch TLE data once after permission is granted
                     } else if (permission === 'denied') {
                         setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
+                    }
                 } catch {
                     setError('Failed to request permission for motion sensors.');
                 }
