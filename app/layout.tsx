@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -43,8 +44,9 @@ export default function RootLayout({
     <html lang="en" className={`${roobert.variable}`}>
       <body
         className={`bg-shapes bg-[#101012] font-roobert text-white`}      >
-      {children}
-    </body>
+        {children}
+        <Analytics />
+      </body>
     </html >
   );
 }
