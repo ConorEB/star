@@ -152,7 +152,7 @@ function FindSatellite() {
                 }));
             }, () => {
                 setError('Failed to get location data. Please make sure location services is enabled for your browser in settings.');
-            }, { timeout: 4000 });
+            }, { timeout: 8000 });
         }
 
         return () => {
