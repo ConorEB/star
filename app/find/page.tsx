@@ -38,6 +38,9 @@ function FindSatellite() {
 
     // Motion and location states
     const [motionData, setMotionData] = useState<MotionData>(initMotionData);
+    const [manualLongitude, setManualLongitude] = useState<string | undefined>();
+    const [manualLatitude, setManualLatitude] = useState<string | undefined>();
+    const [locationError, setLocationError] = useState<string | null>(null);
 
     // Permission states
     const [permissionRequested, setPermissionRequested] = useState(false);
@@ -151,21 +154,8 @@ function FindSatellite() {
                     location: { latitude, longitude, altitude }
                 }));
             }, (error) => {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        setError('Failed to get location data. Please allow location services in browser settings. Message from system: ' + error.message);
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        setError('Failed to get location data. Location information is unavailable. Message from system: ' + error.message);
-                        break;
-                    case error.TIMEOUT:
-                        setError('Failed to get location data. Request timed out. Message from system: ' + error.message);
-                        break;
-                    default:
-                        setError('Failed to get location data. An unknown error occurred. Message from system: ' + error.message);
-                        break;
-                }
-            }, { timeout: 8000, enableHighAccuracy: true, maximumAge: 0 });
+                setLocationError(error.message);
+            }, { timeout: 7000, enableHighAccuracy: true, maximumAge: 0 });
         }
 
         return () => {
@@ -254,10 +244,54 @@ function FindSatellite() {
                     <div
                         className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer'
                         onClick={() => setPermissionRequested(true)}
-                    >Allow access</div>
+                    >Continue</div>
 
                     <p className='text-white/80 mt-6'>PS: After clicking the above button, your device will prompt you to confirm like the image below. Please press yes!</p>
                     <Image priority={true} src='/motion-request.jpeg' width={250} height={250} className='rounded-md border-2 mt-4 border-white/80' alt='Motion Permission' />
+                </div>
+            </div>
+        )
+    }
+
+    if (locationError) {
+        return (
+            <div className='flex justify-center items-center h-dvh px-8'>
+                <div className='md:w-1/2'>
+                    <p className='font-medium text-[25px]'>🌎 Error accessing device location.</p>
+                    <p className='text-white/80 mt-2'>{`Please check that location permissions are enabled for this browser's settings. Otherwise manually input latitude & longitude values. Error: ${locationError}`}</p>
+                    
+                    <input
+                        className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
+                        type='text'
+                        inputMode='decimal'
+                        placeholder='Enter Latitude'
+                        value={manualLatitude}
+                        onChange={(e) => setManualLatitude(e.target.value)}
+                    />
+                    <input
+                        className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
+                        type='text'
+                        inputMode='decimal'
+                        placeholder='Enter Longitude'
+                        value={manualLongitude}
+                        onChange={(e) => setManualLongitude(e.target.value)}
+                    />
+
+                    <div
+                        className='bg-[#1fa95d] border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer'
+                        onClick={() => {
+                            setMotionData((prevMotionData) => ({
+                                ...prevMotionData,
+                                location: {
+                                    latitude: parseFloat(manualLatitude || '0'),
+                                    longitude: parseFloat(manualLongitude || '0'),
+                                    altitude: 0
+                                }
+                            }));
+
+                            setLocationError(null);
+                        }}
+                    >Submit location</div>
                 </div>
             </div>
         )

@@ -2,8 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {
-  
-
   return (
       <div className='h-dvh flex flex-row justify-center items-center px-8'>
         <div className='md:w-1/2'>
@@ -17,7 +15,7 @@ export default function Home() {
               type='text'
               name='satelliteId'
               inputMode='numeric'
-              placeholder='Satellite NORAD ID'
+              placeholder='Enter NORAD ID'
               required
             />
             <button
