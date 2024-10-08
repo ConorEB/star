@@ -150,8 +150,21 @@ function FindSatellite() {
                     ...prevMotionData,
                     location: { latitude, longitude, altitude }
                 }));
-            }, () => {
-                setError('Failed to get location data. Please make sure location services is enabled for your browser in settings.');
+            }, (error) => {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        setError('Failed to get location data. Please allow location services in browser settings.');
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        setError('Failed to get location data. Location information is unavailable.');
+                        break;
+                    case error.TIMEOUT:
+                        setError('Failed to get location data. Request timed out.');
+                        break;
+                    default:
+                        setError('Failed to get location data. An unknown error occurred.');
+                        break;
+                }
             }, { timeout: 8000 });
         }
 
