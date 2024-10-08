@@ -263,7 +263,7 @@ function FindSatellite() {
                     <input
                         className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
                         type='text'
-                        inputMode='decimal'
+                        inputMode='text'
                         placeholder='Enter Latitude'
                         value={manualLatitude}
                         onChange={(e) => setManualLatitude(e.target.value)}
@@ -271,7 +271,7 @@ function FindSatellite() {
                     <input
                         className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
                         type='text'
-                        inputMode='decimal'
+                        inputMode='text'
                         placeholder='Enter Longitude'
                         value={manualLongitude}
                         onChange={(e) => setManualLongitude(e.target.value)}
