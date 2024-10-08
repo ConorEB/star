@@ -58,7 +58,13 @@ function FindSatellite() {
         const response = await fetch(`/api/satellite/${satelliteId}`);
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             const tleLines = data.tle.split('\r\n'); // Split TLE into two lines
+
+            if (tleLines.length !== 2) {
+                setError('Failed to fetch satellite data. Make sure the NORAD ID: ' + satelliteId + ' is correct.');
+                return;
+            }
 
             setSatData((prevSatData: SatelliteData) => ({
                 ...prevSatData,
@@ -135,7 +141,7 @@ function FindSatellite() {
             // @ts-expect-error I'll fix later
             window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
 
-            navigator.geolocation.watchPosition((position) => {
+            navigator.geolocation.getCurrentPosition((position) => {
                 const { latitude, longitude, altitude } = position.coords;
 
                 // @ts-expect-error I'll fix this later
@@ -143,6 +149,8 @@ function FindSatellite() {
                     ...prevMotionData,
                     location: { latitude, longitude, altitude }
                 }));
+            }, () => {
+                setError('Failed to get location data. Please enable location services for your web browser.');
             });
         }
 
@@ -235,7 +243,7 @@ function FindSatellite() {
                     >Allow access</div>
 
                     <p className='text-white/80 mt-6'>PS: After clicking the above button, your device will prompt you to confirm like the image below. Please press yes!</p>
-                    <Image src='/motion-request.jpeg' width={250} height={250} className='rounded-md border-2 mt-4 border-white/80' alt='Motion Permission' />
+                    <Image priority={true} src='/motion-request.jpeg' width={250} height={250} className='rounded-md border-2 mt-4 border-white/80' alt='Motion Permission' />
                 </div>
             </div>
         )
@@ -264,7 +272,7 @@ function FindSatellite() {
 
                 <div className={`${showData ? 'block' : 'hidden'}`}>
                     <p className='text-[20px] font-semibold mt-6'>{satData.name}</p>
-                    <div>Next Pass: {satData.nextPass?.toLocaleString() || 'Calculating...'}</div>
+                    <div>Next Pass: {satData.nextPass ? satData.nextPass.toLocaleString([], { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Calculating...'}</div>
                     <p>Azimuth: {satData.position.azimuth.toFixed(2)}°</p>
                     <p>Elevation: {satData.position.elevation.toFixed(2)}°</p>
                     <p>Azimuth Difference: {satData.azimuthDifference.toFixed(1)}°</p>
