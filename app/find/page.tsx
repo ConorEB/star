@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { handleDeviceOrientation } from '@/lib/motion';
 import { calculateNextPass, predictSatellitePosition } from '@/lib/satellite';
 import DirectionGuide from '@/components/direction-guide';
@@ -42,17 +42,19 @@ function FindSatellite() {
     const [manualLatitude, setManualLatitude] = useState<string | undefined>();
     const [locationError, setLocationError] = useState<string | null>(null);
 
+    // Connection state
+    const [error, setError] = useState<null | string>(null);
+    const [connectionData, setConnectionData] = useState<ConnectionData>(initConnectionData)
+
     // Permission states
     const [permissionRequested, setPermissionRequested] = useState(false);
     const [permissionGranted, setPermissionGranted] = useState(false);
+    const permissionRef = useRef(permissionGranted);
+    const errorRef = useRef(error);
 
     // Satellite data states
     const [showData, setShowData] = useState(true);
     const [satData, setSatData] = useState<SatelliteData>(initSatData);
-
-    // Connection state
-    const [error, setError] = useState<null | string>(null);
-    const [connectionData, setConnectionData] = useState<ConnectionData>(initConnectionData)
 
     // Fetch TLE data from the API
     const fetchSatelliteData = useCallback(async () => {
@@ -107,36 +109,59 @@ function FindSatellite() {
         }
     }, [satData.tle, motionData.location]);
 
+    useEffect(() => {
+        permissionRef.current = permissionGranted;
+        errorRef.current = error;
+    }, [permissionGranted, error]);
+
     // Request permission for device sensors and fetch TLE data once
     useEffect(() => {
         const requestPermission = async () => {
-            window.addEventListener('deviceorientation', async (event) => {
-                if (event.alpha != null && event.beta != null && event.gamma != null) {
+            // @ts-expect-error It does exist
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                // @ts-expect-error It does exist
+                const permission = await DeviceOrientationEvent.requestPermission();
+                if (permission === 'granted') {
                     setPermissionGranted(true);
                     fetchSatelliteData(); // Fetch TLE data once after permission is granted
+                } else if (permission === 'denied') {
+                    setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
                 } else {
-                    // @ts-expect-error It does exist
-                    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                        try {
-                            // @ts-expect-error It does exist
-                            const permission = await DeviceOrientationEvent.requestPermission();
-                            if (permission === 'granted') {
-                                setPermissionGranted(true);
-                                fetchSatelliteData(); // Fetch TLE data once after permission is granted
-                            } else if (permission === 'denied') {
-                                setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
-                            }
-                        } catch {
-                            setError('Failed to request permission for motion sensors.');
-                        }
+                    setError('Failed to request permission for motion sensors.');
+                }
+            } else if (typeof DeviceOrientationEvent !== 'undefined') {
+                window.addEventListener('deviceorientation', (event) => {
+                    if (event.alpha != null && event.beta != null && event.gamma != null) {
+                        setPermissionGranted(true);
+                        fetchSatelliteData(); // Fetch TLE data once after permission is granted
                     } else {
                         setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
                     }
-                }
-            }, { once: true });
+                }, { once: true });
+            } else {
+                setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
+            }
         };
 
-        if (permissionRequested) requestPermission();
+        const permissionFlow = async () => {
+            // Run request permission function to try and get data
+            try {
+                await requestPermission();
+
+                // Wait 1 second after permission request to check if data is available
+                setTimeout(() => {
+                    if (!permissionRef.current && !errorRef.current) {
+                        setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
+                    }
+                }, 1000);
+            } catch {
+                setError('Failed to request permission for motion sensors. Refresh the page or try a different browser.');
+            }
+        }
+
+        if (permissionRequested) {
+            permissionFlow();
+        }
     }, [permissionRequested, fetchSatelliteData]);
 
     // Add event listeners for device sensors
@@ -157,7 +182,7 @@ function FindSatellite() {
                 }));
             }, (error) => {
                 setLocationError(error.message);
-            }, { timeout: 7000, enableHighAccuracy: true, maximumAge: 0 });
+            }, { timeout: 10000, enableHighAccuracy: true, maximumAge: 0 });
         }
 
         return () => {
@@ -244,8 +269,9 @@ function FindSatellite() {
                     <p className='font-medium text-[25px]'>🚀 Device Motion & Location Needed</p>
                     <p className='text-white/80 mt-2'>{`I need to access your device's motion sensors like the gyroscope and location to be able to tell you where to point your phone (and antenna) at the satellite.`}</p>
                     <div
-                        className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer'
+                        className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer hover:translate-y-[-2px] duration-150'
                         onClick={() => setPermissionRequested(true)}
+
                     >Continue</div>
 
                     <p className='text-white/80 mt-6'>PS: After clicking the above button, your device will prompt you to confirm like the image below. Please press yes!</p>

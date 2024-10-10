@@ -15,7 +15,7 @@ export const handleDeviceOrientation = (event: OrientationEvent, setMotionData) 
 
     setMotionData((prevData: MotionData) => ({
         ...prevData,
-        heading: headingValue,
+        heading: headingValue || beta,
         gyroscope: { alpha, beta, gamma },
     })
     )
