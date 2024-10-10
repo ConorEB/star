@@ -39,7 +39,7 @@ function Guide() {
                 <p className="text-white/70">Sorry about that, STAR is still a work in progress. Please let me know using the email below!</p>
 
                 <div className="w-40 h-[2px] bg-white/30 rounded-full mb-1 mt-8" />
-                <p className="pt-2 pb-12">Made with ❤️ by Conor Ebeling. You can contact me at <a className="text-blue-300" href="mailto:hey@conor.link">hey@conor.link</a></p>
+                <p className="pt-2 pb-12">Made by Conor Ebeling. You can contact me at <a className="text-blue-300" href="mailto:hey@conor.link">hey@conor.link</a></p>
             </div>
         </div>
     )
