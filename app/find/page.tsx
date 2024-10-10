@@ -112,15 +112,17 @@ function FindSatellite() {
         const requestPermission = async () => {
             // Test to see if I can access the device orientation API without permission
             window.addEventListener('deviceorientation', (event) => {
-                console.log(JSON.stringify(event))
                 if (event.alpha != null && event.beta != null && event.gamma != null) {
                     setPermissionGranted(true);
                     fetchSatelliteData(); // Fetch TLE data once after permission is granted
                 }
             }, { once: true });
 
+            // Cancel request if permission is already granted
+            if (permissionGranted) return;
+
             // @ts-expect-error It does exist
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function' && permissionGranted === false) {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 try {
                     // @ts-expect-error It does exist
                     const permission = await DeviceOrientationEvent.requestPermission();
