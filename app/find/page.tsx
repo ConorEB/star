@@ -110,11 +110,17 @@ function FindSatellite() {
     // Request permission for device sensors and fetch TLE data once
     useEffect(() => {
         const requestPermission = async () => {
-            if (
-                typeof DeviceOrientationEvent !== 'undefined' &&
-                // @ts-expect-error It does exist
-                typeof DeviceOrientationEvent.requestPermission === 'function'
-            ) {
+            // Test to see if I can access the device orientation API without permission
+            window.addEventListener('deviceorientation', (event) => {
+                console.log(JSON.stringify(event))
+                if (event.alpha != null && event.beta != null && event.gamma != null) {
+                    setPermissionGranted(true);
+                    fetchSatelliteData(); // Fetch TLE data once after permission is granted
+                }
+            }, { once: true });
+
+            // @ts-expect-error It does exist
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function' && permissionGranted === false) {
                 try {
                     // @ts-expect-error It does exist
                     const permission = await DeviceOrientationEvent.requestPermission();
@@ -128,14 +134,12 @@ function FindSatellite() {
                     setError('Failed to request permission for motion sensors.');
                 }
             } else {
-                setError("Please use a mobile device to access this feature. This device does not support motion sensors.");
-                //setPermissionGranted(true);
-                //fetchSatelliteData(); // Fetch TLE data directly if no permission is required
+                setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
             }
         };
 
         if (permissionRequested) requestPermission();
-    }, [permissionRequested, fetchSatelliteData]);
+    }, [permissionRequested, permissionGranted, fetchSatelliteData]);
 
     // Add event listeners for device sensors
     const handleDeviceOrientationEvent = (event: OrientationEvent) => handleDeviceOrientation(event, setMotionData);
@@ -259,7 +263,7 @@ function FindSatellite() {
                 <div className='md:w-1/2'>
                     <p className='font-medium text-[25px]'>🌎 Error accessing device location.</p>
                     <p className='text-white/80 mt-2'>{`Please check that location permissions are enabled for this browser's settings. Otherwise manually input latitude & longitude values (reminder to include a negative sign if needed). Error: ${locationError}`}</p>
-                    
+
                     <input
                         className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
                         type='text'
