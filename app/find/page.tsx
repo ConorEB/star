@@ -110,38 +110,34 @@ function FindSatellite() {
     // Request permission for device sensors and fetch TLE data once
     useEffect(() => {
         const requestPermission = async () => {
-            // Test to see if I can access the device orientation API without permission
-            window.addEventListener('deviceorientation', (event) => {
+            window.addEventListener('deviceorientation', async (event) => {
                 if (event.alpha != null && event.beta != null && event.gamma != null) {
                     setPermissionGranted(true);
                     fetchSatelliteData(); // Fetch TLE data once after permission is granted
+                } else {
+                    // @ts-expect-error It does exist
+                    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                        try {
+                            // @ts-expect-error It does exist
+                            const permission = await DeviceOrientationEvent.requestPermission();
+                            if (permission === 'granted') {
+                                setPermissionGranted(true);
+                                fetchSatelliteData(); // Fetch TLE data once after permission is granted
+                            } else if (permission === 'denied') {
+                                setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
+                            }
+                        } catch {
+                            setError('Failed to request permission for motion sensors.');
+                        }
+                    } else {
+                        setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
+                    }
                 }
             }, { once: true });
-
-            // Cancel request if permission is already granted
-            if (permissionGranted) return;
-
-            // @ts-expect-error It does exist
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                try {
-                    // @ts-expect-error It does exist
-                    const permission = await DeviceOrientationEvent.requestPermission();
-                    if (permission === 'granted') {
-                        setPermissionGranted(true);
-                        fetchSatelliteData(); // Fetch TLE data once after permission is granted
-                    } else if (permission === 'denied') {
-                        setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
-                    }
-                } catch {
-                    setError('Failed to request permission for motion sensors.');
-                }
-            } else {
-                setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
-            }
         };
 
         if (permissionRequested) requestPermission();
-    }, [permissionRequested, permissionGranted, fetchSatelliteData]);
+    }, [permissionRequested, fetchSatelliteData]);
 
     // Add event listeners for device sensors
     const handleDeviceOrientationEvent = (event: OrientationEvent) => handleDeviceOrientation(event, setMotionData);
