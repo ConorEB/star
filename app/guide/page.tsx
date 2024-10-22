@@ -16,7 +16,7 @@ function Guide() {
 
                 <div className='gap-4 flex flex-wrap flex-row pt-4'>
                     <Image src={'/weather.png'} className='rounded-md border-2 border-white/80' width={200} height={200} alt='Weather' />
-                    <Image src={'/weather-2.jpeg'} className='rounded-md border-2 border-white/80' width={200} height={200} alt='Weather' />
+                    <Image src={'/in-use.jpeg'} className='rounded-md border-2 border-white/80' width={200} height={200} alt='Weather' />
                 </div>
                 
                 <p className="text-white/80 pt-6 font-medium text-[20px]">Getting started.</p>
