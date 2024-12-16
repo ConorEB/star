@@ -1,45 +1,39 @@
-export default function DirectionGuide({
-  satData,
-}: {
-  satData: SatelliteData;
-}) {
+const DirectionGuide = ({ satData }: { satData: SatelliteData }) => {
   return (
     <>
       <div className="flex items-center justify-center">
         <div
-          className="absolute z-20 size-28 -translate-x-1/2"
+          className='absolute w-28 h-28 z-20 transform -translate-x-1/2'
           style={{
             transform: `rotate(${(satData.azimuthDifference - 55).toFixed(1)}deg) translateX(100%)`,
           }}
         >
-          <div className="flex items-center">
-            <div className="h-1 w-3 rounded-md bg-white"></div>
-            <div className="mx-1 size-4 rounded-full bg-white shadow-2xl"></div>
-            <div className="h-1 w-3 rounded-md bg-white"></div>
+          <div className='flex items-center'>
+            <div className="h-1 w-3 bg-white rounded-md"></div>
+            <div className="h-4 w-4 bg-white rounded-full mx-1 shadow-2xl"></div>
+            <div className="h-1 w-3 bg-white rounded-md"></div>
           </div>
         </div>
 
-        <div className="absolute size-48">
-          <div
-            className="size-full rounded-full border-x-4 border-b-4 border-[#00ff73] shadow-2xl"
+        <div className="w-48 h-48 absolute">
+          <div className="w-full h-full border-b-4 border-l-4 border-r-4 border-[#00ff73] rounded-full shadow-2xl"
             style={{
-              clipPath: 'polygon(50% 0%, 100% 100%, 33% 100%)',
-              transform: 'rotate(197deg)',
-            }}
-          ></div>
+              clipPath: "polygon(50% 0%, 100% 100%, 33% 100%)",
+              transform: "rotate(197deg)"
+            }}>
+          </div>
         </div>
 
-        <div className="flex size-48 items-center justify-center text-clip rounded-full border-4 border-gray-600">
-          <div
-            className={`triangle mb-40 animate-pulse border-4 bg-[#00ff73]/70`}
-          ></div>
-          <div className="absolute z-10 size-12 rounded-full bg-[#00ff73] shadow-2xl"></div>
+        <div className="border-4 border-gray-600 rounded-full h-48 w-48 flex items-center justify-center overflow-clip">
+          <div className={`triangle bg-[#00ff73]/70 mb-40 animate-pulse border-4`}>
+          </div>
+          <div className='bg-[#00ff73] h-12 w-12 rounded-full absolute z-10 shadow-2xl'></div>
         </div>
       </div>
 
       <div className="flex flex-row items-center justify-center gap-4">
-        <div className="h-44 w-0 border-2 border-dashed border-white/50 bg-transparent"></div>
-        <div className="absolute h-[2px] w-4 rounded-sm bg-gray-400"></div>
+        <div className="border-2 border-dashed border-white/50 w-0 h-44 bg-transparent"></div>
+        <div className='w-4 rounded-sm bg-gray-400 absolute h-[2px]'></div>
         <div
           className={`w-7 rounded-sm ${Math.abs(satData.elevationDifference) < 15 ? 'bg-[#00ff73]' : 'bg-red-500'} absolute h-1`}
           style={{
@@ -48,11 +42,14 @@ export default function DirectionGuide({
         ></div>
       </div>
     </>
+
   );
-}
+};
 
 const calcEleveationTranslate = (elevation: number) => {
-  if (elevation < 0) return elevation / 1.4;
-  if (elevation > 0) return elevation / 1.4;
+  if (elevation < 0) return (elevation / 1.4);
+  if (elevation > 0) return (elevation / 1.4);
   return 0;
-};
+}
+
+export default DirectionGuide;

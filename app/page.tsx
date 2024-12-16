@@ -20,7 +20,7 @@ export default function Home() {
         </p>
 
         <div className="mt-3 text-blue-300">
-          <Link href={'/find?satelliteId=25544'}>
+          <Link href="/find?satelliteId=25544">
             Try a demo with the ISS ➜
           </Link>
         </div>
@@ -33,7 +33,7 @@ export default function Home() {
           <Input
             placeholder="Enter NORAD ID"
             inputMode="numeric"
-            required={true}
+            required
           />
           <button
             type="submit"
@@ -44,7 +44,7 @@ export default function Home() {
         </form>
 
         <Link
-          href={'/guide'}
+          href="/guide"
           className="mt-4 flex h-12 w-48 items-center justify-center rounded-md border-2 border-white/50 bg-black font-medium duration-150 hover:translate-y-[-2px] hover:cursor-pointer hover:border-white/80"
         >
           User Guide
@@ -53,14 +53,14 @@ export default function Home() {
 
       <div className="hidden flex-row gap-6 md:flex">
         <Image
-          src={'/images/weather.png'}
+          src="/images/weather.png"
           className="rounded-md border-2 border-white/80"
           width={200}
           height={150}
           alt="Antenna"
         />
         <Image
-          src={'/images/demo-ui.png'}
+          src="/images/demo-ui.png"
           className="rounded-md border-2 border-white/80"
           width={150}
           height={150}

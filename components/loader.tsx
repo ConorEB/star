@@ -8,7 +8,7 @@ export default function Loader() {
         strokeWidth="3"
         animationDuration="0.75"
         width="25"
-        visible={true}
+        visible
       />
     </div>
   );
