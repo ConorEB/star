@@ -1,4 +1,4 @@
-const DirectionGuide = ({ satData }: { satData: SatelliteData }) => {
+export default function DirectionGuide({ satData }: { satData: SatelliteData }) {
     return (
         <>
             <div className="flex items-center justify-center">
@@ -51,5 +51,3 @@ const calcEleveationTranslate = (elevation: number) => {
     if (elevation > 0) return (elevation / 1.4);
     return 0;
 }
-
-export default DirectionGuide;
