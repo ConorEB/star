@@ -1,3 +1,4 @@
+import Input from '@/components/input';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -14,13 +15,10 @@ export default function Home() {
         </div>
 
         <form className='flex flex-wrap items-center gap-4 mt-5' action='/find' method='get'>
-          <input
-            className='pl-2 h-12 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
-            type='text'
-            name='satelliteId'
-            inputMode='numeric'
+          <Input 
             placeholder='Enter NORAD ID'
-            required
+            inputMode='numeric'
+            required={true}
           />
           <button
             type='submit'

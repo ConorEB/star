@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link';
 import Image from 'next/image';
 import Loader from '@/components/loader';
+import Input from '@/components/input';
 
 const initMotionData = {
     location: { latitude: 0, longitude: 0, altitude: 0 },
@@ -287,21 +288,15 @@ function FindSatellite() {
                 <div className='md:w-1/2'>
                     <p className='font-medium text-[25px]'>🌎 Error accessing device location.</p>
                     <p className='text-white/80 mt-2'>{`Please check that location permissions are enabled for this browser's settings. Otherwise manually input latitude & longitude values (reminder to include a negative sign if needed). Error: ${locationError}`}</p>
-
-                    <input
-                        className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
-                        type='text'
-                        inputMode='text'
+                    <Input
                         placeholder='Enter Latitude'
-                        value={manualLatitude}
+                        inputMode='text'
                         onChange={(e) => setManualLatitude(e.target.value)}
                     />
-                    <input
-                        className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
-                        type='text'
-                        inputMode='text'
+
+                    <Input
                         placeholder='Enter Longitude'
-                        value={manualLongitude}
+                        inputMode='text'
                         onChange={(e) => setManualLongitude(e.target.value)}
                     />
 
