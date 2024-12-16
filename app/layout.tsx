@@ -12,8 +12,9 @@ const roobert = localFont({
 export const metadata: Metadata = {
   title: 'STAR',
   description: 'Satellite Tracking and Alignment Resource',
+  metadataBase: 'https://star.conor.link',
   icons: {
-    icon: '../favicon.png',
+    icon: '../images/favicon.png',
   },
   robots: {
     index: true,
@@ -21,10 +22,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'STAR',
     description: `Satellite Tracking and Alignment Resource`,
-    url: 'https://star.conor.link',
     images: [
       {
-        url: 'https://star.conor.link/og.jpg',
+        url: '/og.jpg',
         width: 1200,
         height: 630,
       },

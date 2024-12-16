@@ -27,14 +27,14 @@ function Guide() {
 
         <div className="flex flex-row flex-wrap gap-4 pt-4">
           <Image
-            src={'/weather.png'}
+            src={'/images/weather.png'}
             className="rounded-md border-2 border-white/80"
             width={200}
             height={200}
             alt="Weather"
           />
           <Image
-            src={'/in-use.jpeg'}
+            src={'/images/in-use.png'}
             className="rounded-md border-2 border-white/80"
             width={200}
             height={200}
@@ -60,7 +60,7 @@ function Guide() {
         <p className="pt-4">{`You'll then be prompted to share your device's motion data. This is needed to align the antenna/device with the satellite. After clicking yes, you should now see a screen similar to below:`}</p>
 
         <Image
-          src={'/guide.png'}
+          src={'/images/demo-ui.png'}
           className="mt-4 rounded-md border-2 border-white/80"
           width={175}
           height={175}

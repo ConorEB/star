@@ -337,7 +337,7 @@ function FindSatellite() {
           </p>
           <Image
             priority={true}
-            src="/motion-request.jpeg"
+            src="/motion-request.png"
             width={250}
             height={250}
             className="mt-4 rounded-md border-2 border-white/80"

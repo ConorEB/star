@@ -53,14 +53,14 @@ export default function Home() {
 
       <div className="hidden flex-row gap-6 md:flex">
         <Image
-          src={'/weather.png'}
+          src={'/images/weather.png'}
           className="rounded-md border-2 border-white/80"
           width={200}
           height={150}
           alt="Antenna"
         />
         <Image
-          src={'/guide.png'}
+          src={'/images/demo-ui.png'}
           className="rounded-md border-2 border-white/80"
           width={150}
           height={150}
