@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
-import localFont from "next/font/local";
-import "./globals.css";
+import { Analytics } from '@vercel/analytics/react';
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import './globals.css';
 
 const roobert = localFont({
   src: '../public/fonts/roobert-variable.woff2',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     icon: '../favicon.png',
   },
   robots: {
-    index: true
+    index: true,
   },
   openGraph: {
     title: 'STAR',
@@ -34,7 +34,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,11 +41,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${roobert.variable}`}>
-      <body
-        className='bg-shapes bg-[#101012] font-roobert text-white'>
+      <body className="bg-[#101012] bg-shapes font-roobert text-white">
         {children}
         <Analytics />
       </body>
-    </html >
+    </html>
   );
 }

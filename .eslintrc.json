@@ -55,7 +55,10 @@
               "object"
             ],
             "newlines-between": "always",
-            "alphabetize": { "order": "asc", "caseInsensitive": true }
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": true
+            }
           }
         ],
         "import/default": "off",
