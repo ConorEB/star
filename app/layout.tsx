@@ -4,7 +4,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 
 const roobert = localFont({
-  src: '../public/fonts/roobert-variable.woff2',
+  src: '../public/fonts/roobert.woff2',
   variable: '--font-roobert',
   display: 'swap',
 });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+const apiKey = process.env.N2YO_API_KEY;
 const baseURL = 'https://api.n2yo.com/rest/v1/satellite';
 
 /**
@@ -16,8 +17,7 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } },
 ) {
-  const apiKey = process.env.N2YO_API_KEY;
-  const satelliteId = params.id || '25544'; // Example satellite: ISS 25544
+  const satelliteId = params.id
 
   try {
     const url = `${baseURL}/tle/${satelliteId}&apiKey=${apiKey}`;

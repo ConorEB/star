@@ -1,9 +1,11 @@
 import * as satellite from 'satellite.js';
-import { radiansToDegrees } from './utility/math';
+import { DeviceLocation } from '@/types/motionData';
+import { TLE } from '@/types/satelliteData';
+import { radiansToDegrees } from './utils';
 
 export const predictSatellitePosition = (
-  tle: TleData,
-  observerCoords: UserLocation,
+  tle: TLE,
+  observerCoords: DeviceLocation,
 ) => {
   const satrec = satellite.twoline2satrec(tle.line1, tle.line2);
   const positionAndVelocity = satellite.propagate(satrec, new Date());
@@ -23,7 +25,6 @@ export const predictSatellitePosition = (
   const lookAngles = satellite.ecfToLookAngles(observerGd, positionEcf);
 
   return {
-    //
     azimuth: radiansToDegrees(lookAngles.azimuth),
     elevation: radiansToDegrees(lookAngles.elevation),
   };

@@ -18,7 +18,7 @@ export default function Guide() {
         <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
 
         <p className="pt-4">
-          {`STAR is a web interface that uses your device's motion sensors to align your phone (and antenna) with a specified satellite. It was designed and developed for both beginners and advanced users - employing a similar design language to`}{' '}
+          {`STAR is a web interface that uses your device's motion sensors to align your phone (and antenna) with a specified satellite. It was designed and developed for both beginners and advanced users - employing a similar design language to `}
           <Link
             href="https://support.apple.com/en-us/101573"
             className="text-blue-300"
