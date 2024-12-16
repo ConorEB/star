@@ -13,9 +13,9 @@ export default function Home() {
         </p>
         <p className="mt-3 text-white/80 md:mr-10">
           {`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location.`}{' '}
-          Made by{' '}
+          Made by
           <a href="https://conor.link" className="text-purple-400">
-            Conor
+            {' Conor'}
           </a>
         </p>
 
