@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-function Guide() {
+export default function Guide() {
   return (
     <div className="flex h-dvh w-full justify-center">
       <div className="px-8 md:w-2/3">
@@ -82,18 +82,16 @@ function Guide() {
 
         <div className="mb-1 mt-8 h-[2px] w-40 rounded-full bg-white/30" />
         <p className="pb-12 pt-2">
-          Made by{' '}
+          Made by
           <a href="https://conor.link" className="text-blue-300">
-            Conor Ebeling
+            {' Conor Ebeling'}
           </a>
-          . You can contact me at{' '}
+          . You can contact me at
           <a className="text-blue-300" href="mailto:hey@conor.link">
-            hey@conor.link
+            {' hey@conor.link'}
           </a>
         </p>
       </div>
     </div>
   );
 }
-
-export default Guide;

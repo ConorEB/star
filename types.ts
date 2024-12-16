@@ -69,7 +69,7 @@ interface MotionData {
 }
 
 /**
- * Represents the connection status.
+ * Represents the connection status of a device and the satellite based on the current alignment.
  *
  * @property {boolean} connected - Indicates whether the connection is established.
  * @property {string} message - A message describing the connection status.
@@ -80,12 +80,13 @@ interface ConnectionData {
 }
 
 /**
- * Represents an orientation event.
+ * Represents an orientation event from a device.
+ * https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientation_event
  *
  * @property {number} alpha - The alpha angle of the orientation event.
  * @property {number} beta - The beta angle of the orientation event.
  * @property {number} gamma - The gamma angle of the orientation event.
- * @property {number} webkitCompassHeading - The compass heading from the WebKit browser.
+ * @property {number} webkitCompassHeading - The compass heading from the WebKit (Safari) browser.
  */
 interface OrientationEvent {
   alpha: number;

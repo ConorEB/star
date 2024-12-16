@@ -1,4 +1,5 @@
 import * as satellite from 'satellite.js';
+import { radiansToDegrees } from './utility/math';
 
 export const predictSatellitePosition = (
   tle: TleData,
@@ -64,8 +65,4 @@ export const calculateNextPass = (
   }
 
   return new Date();
-};
-
-const radiansToDegrees = (radians: number) => {
-  return radians * (180 / Math.PI);
 };

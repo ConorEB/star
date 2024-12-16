@@ -8,7 +8,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import DirectionGuide from '@/components/direction-guide';
 import Input from '@/components/input';
 import Loader from '@/components/loader';
-import { handleDeviceOrientation } from '@/lib/motion';
 import { calculateNextPass, predictSatellitePosition } from '@/lib/satellite';
 
 const initMotionData = {
@@ -89,6 +88,31 @@ function FindSatellite() {
       );
     }
   }, [searchParams]);
+
+  // Device orientation and motion handlers
+  // @ts-expect-error setMotionData is a function
+  const handleDeviceOrientation = (
+    event: OrientationEvent,
+    setMotionData,
+  ) => {
+    const { alpha, beta, gamma, webkitCompassHeading } = event;
+
+    // Calculate the device's heading (azimuth)
+    let headingValue = webkitCompassHeading; // alpha is the compass heading in degrees
+
+    // Handle device orientation (portrait vs. landscape)
+    if (window.screen.orientation && window.screen.orientation.angle) {
+      headingValue += window.screen.orientation.angle;
+    }
+
+    headingValue = headingValue % 360; // Ensure the heading is between 0 and 360
+
+    setMotionData((prevData: MotionData) => ({
+      ...prevData,
+      heading: headingValue || beta,
+      gyroscope: { alpha, beta, gamma },
+    }));
+  };
 
   // Update satellite position from TLE data every second
   useEffect(() => {
@@ -337,7 +361,7 @@ function FindSatellite() {
           </p>
           <Image
             priority={true}
-            src="/motion-request.png"
+            src="/images/motion-request.png"
             width={250}
             height={250}
             className="mt-4 rounded-md border-2 border-white/80"
