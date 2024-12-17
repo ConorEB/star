@@ -82,7 +82,8 @@ function FindSatellite() {
         <div className="flex gap-4">
           <Link
             href="/"
-            className="flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-white/50 bg-gray-800 py-1 font-medium hover:translate-y-[-2px]"
+            className="flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray py-1 font-medium"
+            animate={true}
           >
             ← Back
           </Link>
@@ -90,13 +91,13 @@ function FindSatellite() {
           <Button
             text={showTrackingData ? 'Hide Data' : 'Show Data'}
             onClick={() => setShowTrackingData(!showTrackingData)}
-            bgColor="bg-primary-green"
+            bgColor="bg-green"
           />
         </div>
 
         {showTrackingData && (
           <>
-            <p className="mt-6 text-[20px] font-semibold">
+            <p className="mt-6 text-md font-semibold">
               {satData.name}
             </p>
 
@@ -117,13 +118,13 @@ function FindSatellite() {
               {trackingStatus.elevationDifference.toFixed(1)}°
             </p>
 
-            <div className="mt-4 h-[2px] w-full rounded-full bg-white/50" />
+            <div className="mt-4 h-[2px] w-full rounded-full bg-light-gray" />
           </>
         )}
 
         <div>
           <p
-            className={`${trackingStatus.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}
+            className={`${trackingStatus.connected ? 'text-green-secondary' : 'text-red-500'} mt-4 font-medium`}
           >
             {trackingStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
           </p>

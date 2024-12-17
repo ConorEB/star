@@ -5,14 +5,14 @@ export default function PermissionRequest({ requestPermission }) {
   return (
     <div className="flex h-dvh items-center justify-center px-8">
       <div className="md:w-1/2">
-        <p className="text-[25px] font-medium">
+        <p className="text-lg font-medium">
           🚀 Device Motion & Location Needed
         </p>
         <p className="mt-2 text-white/80">{`I need to access your device's motion sensors like the gyroscope and location to be able to tell you where to point your phone (and antenna) at the satellite.`}</p>
         <Button
           text="Continue"
           onClick={() => requestPermission()}
-          bgColor="bg-primary-blue"
+          bgColor="bg-blue"
         />
 
         <p className="mt-6 text-white/80">

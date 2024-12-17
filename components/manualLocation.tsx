@@ -8,7 +8,7 @@ export default function ManualLocation({ error, setError }) {
     return (
         <div className="flex h-dvh items-center justify-center px-8">
             <div className="md:w-1/2">
-                <p className="text-[25px] font-medium">🌎 Error accessing device location.</p>
+                <p className="text-lg font-medium">🌎 Error accessing device location.</p>
                 <p className="mt-2 text-white/80">
                     Check location permissions. Or manually input latitude & longitude. Error: {error}
                 </p>
@@ -21,7 +21,7 @@ export default function ManualLocation({ error, setError }) {
                         setManualLocation(parseFloat(latitude || '0'), parseFloat(longitude || '0'));
                         setError(null);
                     }}
-                    bgColor="bg-primary-blue"
+                    bgColor="bg-blue"
                 />
             </div>
         </div>

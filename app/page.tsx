@@ -6,19 +6,19 @@ export default function Home() {
   return (
     <div className="flex h-dvh flex-row items-center justify-center px-8">
       <div className="md:w-1/2">
-        <p className="w-full text-[40px] font-semibold">🛰️ STAR</p>
-        <p className="mt-3 text-[20px]">
+        <p className="w-full text-2xl font-semibold">🛰️ STAR</p>
+        <p className="mt-3 text-md">
           Satellite Tracking and Alignment Resource
         </p>
         <p className="mt-3 text-white/80 md:mr-10">
           {`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location. Made by `}
 
-          <Link href="https://conor.link" className="text-purple-400">
+          <Link href="https://conor.link" className="text-purple">
             Conor
           </Link>
         </p>
 
-        <div className="mt-3 text-blue-300">
+        <div className="mt-3 text-blue-secondary">
           <Link href="/find?satelliteId=25544">
             Try a demo with the ISS ➜
           </Link>
@@ -29,7 +29,10 @@ export default function Home() {
           action="/find"
           method="get"
         >
-          <Input
+          {/* use normal input and other HTML tags for client rendered form (keeps it server side rendered) */}
+          <input
+            className="h-12 w-48 rounded-md border-2 border-white/80 bg-dark-gray pl-2 text-white"
+            type="text"
             placeholder="Enter NORAD ID"
             inputMode="numeric"
             required
@@ -44,7 +47,8 @@ export default function Home() {
 
         <Link
           href="/guide"
-          className="mt-4 flex h-12 w-48 items-center justify-center rounded-md border-2 border-white/50 bg-black font-medium duration-150 hover:translate-y-[-2px] hover:cursor-pointer hover:border-white/80"
+          className="mt-4 flex h-12 w-48 items-center justify-center bg-[#101012] rounded-md border-2 border-light-gray bg-black font-medium"
+          animate={true}
         >
           User Guide
         </Link>

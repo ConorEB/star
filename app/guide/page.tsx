@@ -7,12 +7,13 @@ export default function Guide() {
       <div className="px-8 md:w-2/3">
         <Link
           href="/"
-          className="mt-16 flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-white/50 bg-gray-800 py-1 font-medium duration-150 hover:translate-y-[-2px]"
+          className="mt-16 flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray py-1 font-medium"
+          animate={true}
         >
           ← Back
         </Link>
 
-        <p className="pt-4 text-[20px] font-medium text-white/80">
+        <p className="pt-4 text-md font-medium text-white/80">
           Introduction.
         </p>
         <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
@@ -21,7 +22,7 @@ export default function Guide() {
           {`STAR is a web interface that uses your device's motion sensors to align your phone (and antenna) with a specified satellite. It was designed and developed for both beginners and advanced users - employing a similar design language to `}
           <Link
             href="https://support.apple.com/en-us/101573"
-            className="text-blue-300"
+            className="text-blue-secondary"
           >{`Apple's satellite SOS`}</Link>
         </p>
 
@@ -42,7 +43,7 @@ export default function Guide() {
           />
         </div>
 
-        <p className="pt-6 text-[20px] font-medium text-white/80">
+        <p className="pt-6 text-md font-medium text-white/80">
           Getting started.
         </p>
         <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
@@ -50,7 +51,7 @@ export default function Guide() {
         <p className="pt-4">
           {`To start, you'll have to input the NORAD ID for the satellite you want to track. You can lookup the ID by the name of the satellite here:`}{' '}
           <Link
-            className="text-blue-300"
+            className="text-blue-secondary"
             href="https://www.n2yo.com/database/"
           >
             https://www.n2yo.com/database/
@@ -69,7 +70,7 @@ export default function Guide() {
 
         <p className="pt-4">{`That's it! Hold your device on the same plane as your antenna to align it with the satellite. I personally use a handheld yagi and a iPhone MagSafe magnet clamp that allows me to get precise results without having to hold both the antenna and phone.`}</p>
 
-        <p className="pt-6 text-[20px] font-medium text-white/80">
+        <p className="pt-6 text-md font-medium text-white/80">
           FAQ.
         </p>
         <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
@@ -91,7 +92,7 @@ export default function Guide() {
           . You can contact me at
           <Link
             href="mailto:hey@conor.link"
-            className="text-blue-300"
+            className="text-blue-secondary"
           >
             {' hey@conor.link'}
           </Link>

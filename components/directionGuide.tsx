@@ -27,7 +27,7 @@ const DirectionGuide = ({ trackingStatus }: { trackingStatus: TrackingStatus }) 
           </div>
         </div>
 
-        <div className="border-4 border-gray-600 rounded-full h-48 w-48 flex items-center justify-center overflow-clip">
+        <div className="border-4 border-light-gray rounded-full h-48 w-48 flex items-center justify-center overflow-clip">
           <div className={`triangle bg-[#00ff73]/70 mb-40 animate-pulse border-4`}>
           </div>
           <div className='bg-[#00ff73] h-12 w-12 rounded-full absolute z-10 shadow-2xl'></div>
@@ -35,7 +35,7 @@ const DirectionGuide = ({ trackingStatus }: { trackingStatus: TrackingStatus }) 
       </div>
 
       <div className="flex flex-row items-center justify-center gap-4">
-        <div className="border-2 border-dashed border-white/50 w-0 h-44 bg-transparent"></div>
+        <div className="border-2 border-dashed border-light-gray w-0 h-44 bg-transparent"></div>
         <div className='w-4 rounded-sm bg-gray-400 absolute h-[2px]'></div>
         <div
           className={`w-7 rounded-sm ${Math.abs(trackingStatus.elevationDifference) < 15 ? 'bg-[#00ff73]' : 'bg-red-500'} absolute h-1`}
