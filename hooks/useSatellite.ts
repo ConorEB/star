@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { calculateNextPass, predictSatellitePosition } from '@/lib/orbitPropagation';
-import { DeviceLocation, MotionData } from '@/types/oritentation';
 import { SatelliteData } from '@/types/satellite';
 
 const initialSatelliteData: SatelliteData = {
@@ -8,6 +6,13 @@ const initialSatelliteData: SatelliteData = {
     tle: { line1: '', line2: '' },
 };
 
+/**
+ * Hook to fetch satellite TLE data from the API
+ *
+ * @param {string} satelliteId - The NORAD satellite ID to fetch data for
+ * @returns {object} - An object containing satellite data and error state.
+ *
+ */
 export function useSatellite(satelliteId: string) {
     const [satData, setSatData] = useState<SatelliteData>(initialSatelliteData);
     const [error, setError] = useState<string | null>(null);
@@ -21,6 +26,7 @@ export function useSatellite(satelliteId: string) {
                 const response = await fetch(`/api/satellite/${satelliteId}`);
                 if (!response.ok) setError('Failed to fetch satellite data.');
 
+                // Parse response data and check for valid TLE data
                 const data = await response.json();
                 const tleLines = data.tle.split('\r\n');
                 if (tleLines.length !== 2 || !data.info.satname) {

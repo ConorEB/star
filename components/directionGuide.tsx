@@ -3,12 +3,12 @@ import { TrackingStatus } from "@/types/oritentation";
 
 function DirectionGuide ({ trackingStatus }: { trackingStatus: TrackingStatus }) {
   return (
-    <>
+    <div className="mt-8 flex items-center justify-center gap-10">
       <div className="flex items-center justify-center">
         <div
           className='absolute w-28 h-28 z-20 transform -translate-x-1/2'
           style={{
-            transform: `rotate(${(trackingStatus.azimuthDifference - 55).toFixed(1)}deg) translateX(100%)`,
+            transform: `rotate(${(trackingStatus.azimuthDifference - 55).toFixed(1)}deg) translateX(100%)`, // 55 deg is the calculated offset
           }}
         >
           <div className='flex items-center'>
@@ -44,8 +44,7 @@ function DirectionGuide ({ trackingStatus }: { trackingStatus: TrackingStatus })
           }}
         ></div>
       </div>
-    </>
-
+    </div>
   );
 };
 

@@ -115,9 +115,7 @@ function FindSatellite() {
           <p className="pt-1">{trackingStatus.message}</p>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-10">
-          <DirectionGuide trackingStatus={trackingStatus} />
-        </div>
+        <DirectionGuide trackingStatus={trackingStatus} />
       </div>
     </div>
   );

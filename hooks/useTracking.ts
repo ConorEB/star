@@ -16,6 +16,14 @@ const initSatellitePosition: SatellitePosition = {
     elevation: 0,
 };
 
+/**
+ * Hook to handle tracking and continuous updates of satellite and device orientation data
+ *
+ * @param {MotionData} motionData - Object containing device orientation and location data.
+ * @param {SatelliteData} satData - Object containing satellite TLE data.
+ * @returns {object} - An object containing tracking status and satellite position.
+ *
+ */
 export function useTracking(motionData: MotionData, satData: SatelliteData) {
     const [trackingStatus, setTrackingStatus] = useState<TrackingStatus>(initTrackingStatus);
     const [satPosition, setSatPosition] = useState<SatellitePosition>(initSatellitePosition);
@@ -24,7 +32,7 @@ export function useTracking(motionData: MotionData, satData: SatelliteData) {
     useEffect(() => {
         if (satPosition && motionData.heading && motionData.gyroscope.beta) {
             let azDiff = satPosition.azimuth - motionData.heading;
-            if (azDiff > 180) azDiff -= 360;
+            if (azDiff > 180) azDiff -= 360; // normalize to -180 to 180 for vertical axis
             if (azDiff < -180) azDiff += 360;
 
             const elDiff = satPosition.elevation - (motionData.gyroscope.beta ?? 0);
@@ -39,7 +47,7 @@ export function useTracking(motionData: MotionData, satData: SatelliteData) {
         }
     }, [satPosition, motionData.heading, motionData.gyroscope.beta]);
 
-    // Update connection status message
+    // Update dynamic connection status message
     useEffect(() => {
         const azDiff = trackingStatus.azimuthDifference;
         const elDiff = trackingStatus.elevationDifference;
@@ -91,6 +99,7 @@ export function useTracking(motionData: MotionData, satData: SatelliteData) {
                 setSatPosition(predictedPosition);
             }, 1000);
 
+            // Only calculate next pass once when TLE data is available and location is set
             const nextPass = calculateNextPass(satData.tle, location);
             setTrackingStatus((prev) => ({ ...prev, nextPass }));
 

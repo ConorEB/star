@@ -17,7 +17,7 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } },
 ) {
-  params = await params; // Ensure params are resolved before using them
+  params = await params; // Ensure params are resolved before using them (NextJS quirk)
   const satelliteId = params.id;
 
   try {
@@ -31,7 +31,7 @@ export async function GET(
     const data = await response.json();
 
     // Validate TLE data
-    if (!data.info || !data.info.satid) {
+    if (!data.info?.satid) {
       throw new Error('Invalid TLE data');
     }
 

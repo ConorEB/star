@@ -1,3 +1,4 @@
+import Header from '@/components/ui/header';
 import Image from '@/components/ui/image';
 import Link from '@/components/ui/link';
 
@@ -13,10 +14,7 @@ export default function Page() {
           ← Back
         </Link>
 
-        <p className="pt-4 text-md font-medium text-white/80">
-          Introduction.
-        </p>
-        <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
+        <Header title="Introduction." />
 
         <p className="pt-4">
           {`STAR is a web interface that uses your device's motion sensors to align your phone (and antenna) with a specified satellite. It was designed and developed for both beginners and advanced users - employing a similar design language to `}
@@ -43,10 +41,7 @@ export default function Page() {
           />
         </div>
 
-        <p className="pt-6 text-md font-medium text-white/80">
-          Getting started.
-        </p>
-        <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
+        <Header title="Getting started." />
 
         <p className="pt-4">
           {`To start, you'll have to input the NORAD ID for the satellite you want to track. You can lookup the ID by the name of the satellite here:`}{' '}
@@ -70,10 +65,8 @@ export default function Page() {
 
         <p className="pt-4">{`That's it! Hold your device on the same plane as your antenna to align it with the satellite. I personally use a handheld yagi and a iPhone MagSafe magnet clamp that allows me to get precise results without having to hold both the antenna and phone.`}</p>
 
-        <p className="pt-6 text-md font-medium text-white/80">
-          FAQ.
-        </p>
-        <div className="my-1 h-[2px] w-40 rounded-full bg-white/30" />
+        <Header title="FAQ." />
+
         <p className="pt-4">Can I use this on a computer?</p>
         <p className="text-white/70">{`Unfortunately not. You need motion sensors which computers don't share as web APIs.`}</p>
 
@@ -83,13 +76,14 @@ export default function Page() {
           let me know using the email below!
         </p>
 
-        <div className="mb-1 mt-8 h-[2px] w-40 rounded-full bg-white/30" />
+        <Header title="Contact me." />
+
         <p className="pb-12 pt-2">
           Made by
           <Link href="https://conor.link" className="text-purple-400">
             {' Conor Ebeling'}
           </Link>
-          . You can contact me at
+          . You can reach me at
           <Link
             href="mailto:hey@conor.link"
             className="text-blue-secondary"
