@@ -8,17 +8,16 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSatellite } from '@/hooks/useSatellite';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMotion } from '@/hooks/useMotion';
+import { useTracking } from '@/hooks/useTracking';
 
 import LocationError from '@/components/manualLocation';
 import Error from '@/components/error';
-
 import ManualLocation from '@/components/manualLocation';
 import DirectionGuide from '@/components/directionGuide';
 import Input from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import PermissionRequest from '@/components/permissionRequest';
 import { formatDate } from '@/lib/utils';
-import { useTracking } from '@/hooks/useTracking';
 
 function FindSatellite() {
   // Query params for satellite ID
@@ -33,8 +32,7 @@ function FindSatellite() {
   const { satData, error: satDataError } = useSatellite(satelliteId);
   const { permissionGranted, requestPermission, error: permissionError } = usePermissions();
 
-  const { motionData, error: locationError, setManualLocation } = useMotion(permissionGranted);
-  if (locationError) { setShowManualLocation(true); } // if error with location fetch, show page to manually input location
+  const { motionData, error: locationError, setError: setLocationError, setManualLocation } = useMotion(permissionGranted);
 
   const { trackingStatus, satPosition } = useTracking(motionData, satData);
 
@@ -48,8 +46,8 @@ function FindSatellite() {
     return (
       <ManualLocation
         error={locationError}
+        setError={setLocationError}
         setManualLocation={setManualLocation}
-        setShowManualLocation={setShowManualLocation}
       />
     );
   }
@@ -111,7 +109,7 @@ function FindSatellite() {
         </div>
 
         <div className="mt-12 flex items-center justify-center gap-10">
-          <DirectionGuide satData={satData} />
+          <DirectionGuide trackingStatus={trackingStatus} />
         </div>
       </div>
     </div>

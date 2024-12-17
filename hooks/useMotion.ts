@@ -1,7 +1,7 @@
 import { MotionData } from '@/types/oritentation';
 import { useState, useEffect } from 'react';
 
-export function useMotion(permissionGranted: boolean) {
+export function useMotion(motionPermissionGranted: boolean) {
     const [motionData, setMotionData] = useState<MotionData>({
         location: { latitude: 0, longitude: 0, altitude: 0 },
         gyroscope: { alpha: null, beta: null, gamma: null },
@@ -17,8 +17,10 @@ export function useMotion(permissionGranted: boolean) {
     };
 
     useEffect(() => {
-        if (!permissionGranted) return;
+        // Check if motion permission has been granted before continuing
+        if (!motionPermissionGranted) return;
 
+        // Receive device orientation event and update resulting motion data
         const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
             const { alpha, beta, gamma, webkitCompassHeading } = event;
 
@@ -36,6 +38,9 @@ export function useMotion(permissionGranted: boolean) {
             }));
         };
 
+        // Fetch geolocation data with web API
+        // NOTE: Has built in permission request API
+        // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition
         const fetchLocation = () => {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -48,17 +53,16 @@ export function useMotion(permissionGranted: boolean) {
                 (error) => {
                     setLocationError(error.message);
                 },
-                { timeout: 10000, enableHighAccuracy: true, maximumAge: 0 }
+                { timeout: 7000, enableHighAccuracy: true, maximumAge: 0 }
             );
         };
 
-        window.addEventListener('deviceorientation', handleDeviceOrientation);
         fetchLocation();
-
+        window.addEventListener('deviceorientation', handleDeviceOrientation);
         return () => {
             window.removeEventListener('deviceorientation', handleDeviceOrientation);
         };
-    }, [permissionGranted]);
+    }, [motionPermissionGranted]);
 
-    return { motionData, error, setMotionData };
+    return { motionData, error, setError, setManualLocation };
 }

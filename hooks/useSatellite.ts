@@ -13,31 +13,31 @@ export function useSatellite(satelliteId: string) {
     const [error, setError] = useState<string | null>(null);
 
     // Fetch TLE data from the API
-    const fetchSatelliteData = useCallback(async () => {
-        if (!satelliteId) return;
-
-        try {
-            const response = await fetch(`/api/satellite/${satelliteId}`);
-            if (!response.ok) setError('Failed to fetch satellite data.');
-
-            const data = await response.json();
-            const tleLines = data.tle.split('\r\n');
-            if (tleLines.length !== 2 || !data.info.satname) {
-                setError('Invalid TLE data.');
-            }
-
-            setSatData({
-                name: data.info.satname,
-                tle: { line1: tleLines[0], line2: tleLines[1] }
-            });
-        } catch (err: any) {
-            setError(err.message);
-        }
-    }, [satelliteId]);
-
     useEffect(() => {
+        const fetchSatelliteData = useCallback(async () => {
+            if (!satelliteId) return;
+
+            try {
+                const response = await fetch(`/api/satellite/${satelliteId}`);
+                if (!response.ok) setError('Failed to fetch satellite data.');
+
+                const data = await response.json();
+                const tleLines = data.tle.split('\r\n');
+                if (tleLines.length !== 2 || !data.info.satname) {
+                    setError('Invalid TLE data.');
+                }
+
+                setSatData({
+                    name: data.info.satname,
+                    tle: { line1: tleLines[0], line2: tleLines[1] }
+                });
+            } catch (err: any) {
+                setError(err.message);
+            }
+        }, [satelliteId]);
+
         fetchSatelliteData();
-    }, [fetchSatelliteData]);
+    }, []);
 
     return { satData, error };
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ManualLocation({ error, setShowManualLocation, setManualLocation }) {
+export default function ManualLocation({ error, setError }) {
       const [longitude, setLongitude] = useState<string | undefined>();
       const [latitude, setLatitude] = useState<string | undefined>();
     
@@ -18,7 +18,7 @@ export default function ManualLocation({ error, setShowManualLocation, setManual
                     className="mt-4 flex w-40 cursor-pointer items-center justify-center rounded-md border-2 border-white/50 bg-[#1fa95d] py-2 font-medium"
                     onClick={() => {
                         setManualLocation(parseFloat(latitude || '0'), parseFloat(longitude || '0'));
-                        setShowManualLocation(false);
+                        setError(null);
                     }}
                 >
                     Submit location
