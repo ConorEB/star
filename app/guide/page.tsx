@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '@/components/ui/image';
 import Link from '@/components/ui/link';
 
 export default function Guide() {
@@ -34,7 +34,7 @@ export default function Guide() {
             alt="Satellite image of the weather"
           />
           <Image
-            src="/images/in-use.png"
+            src="/images/inUse.png"
             className="rounded-md border-2 border-white/80"
             width={200}
             height={200}
@@ -60,7 +60,7 @@ export default function Guide() {
         <p className="pt-4">{`You'll then be prompted to share your device's motion data. This is needed to align the antenna/device with the satellite. After clicking yes, you should now see a screen similar to below:`}</p>
 
         <Image
-          src="/images/demo-ui.png"
+          src="/images/demoUI.png"
           className="mt-4 rounded-md border-2 border-white/80"
           width={175}
           height={175}

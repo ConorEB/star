@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '@/components/ui/image';
 import Button from './ui/button';
 
 export default function PermissionRequest({ requestPermission }) {
@@ -21,7 +21,7 @@ export default function PermissionRequest({ requestPermission }) {
         </p>
         <Image
           priority
-          src="/images/motion-request.png"
+          src="/images/motionRequest.png"
           width={250}
           height={250}
           className="mt-4 rounded-md border-2 border-white/80"

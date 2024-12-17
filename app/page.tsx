@@ -1,5 +1,4 @@
-import Image from 'next/image';
-
+import Image from '@/components/ui/image';
 import Input from '@/components/ui/input';
 import Link from '@/components/ui/link';
 
@@ -60,7 +59,7 @@ export default function Home() {
           alt="Satellite image of the weather"
         />
         <Image
-          src="/images/demo-ui.png"
+          src="/images/demoUI.png"
           className="rounded-md border-2 border-white/80"
           width={150}
           height={150}
