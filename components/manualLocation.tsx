@@ -1,9 +1,10 @@
 import { useState } from "react";
+import Button from "./ui/button";
 
 export default function ManualLocation({ error, setError }) {
-      const [longitude, setLongitude] = useState<string | undefined>();
-      const [latitude, setLatitude] = useState<string | undefined>();
-    
+    const [longitude, setLongitude] = useState<string | undefined>();
+    const [latitude, setLatitude] = useState<string | undefined>();
+
     return (
         <div className="flex h-dvh items-center justify-center px-8">
             <div className="md:w-1/2">
@@ -14,15 +15,14 @@ export default function ManualLocation({ error, setError }) {
                 <Input placeholder="Enter Latitude" onChange={(e) => setManualLatitude(e.target.value)} />
                 <Input placeholder="Enter Longitude" onChange={(e) => setLatitude(e.target.value)} />
 
-                <div
-                    className="mt-4 flex w-40 cursor-pointer items-center justify-center rounded-md border-2 border-white/50 bg-[#1fa95d] py-2 font-medium"
+                <Button
+                    text="Submit Location"
                     onClick={() => {
                         setManualLocation(parseFloat(latitude || '0'), parseFloat(longitude || '0'));
                         setError(null);
                     }}
-                >
-                    Submit location
-                </div>
+                    bgColor="bg-primary-blue"
+                />
             </div>
         </div>
     )

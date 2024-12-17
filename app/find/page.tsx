@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from '@/components/ui/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
@@ -18,6 +18,7 @@ import Input from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import PermissionRequest from '@/components/permissionRequest';
 import { formatDate } from '@/lib/utils';
+import Button from '@/components/ui/button';
 
 function FindSatellite() {
   // Query params for satellite ID
@@ -31,9 +32,7 @@ function FindSatellite() {
   // Custom hooks
   const { satData, error: satDataError } = useSatellite(satelliteId);
   const { permissionGranted, requestPermission, error: permissionError } = usePermissions();
-
   const { motionData, error: locationError, setError: setLocationError, setManualLocation } = useMotion(permissionGranted);
-
   const { trackingStatus, satPosition } = useTracking(motionData, satData);
 
   // Display error UI for several possible errors that we can't recover from (I.E. user rejects permission to use motion data)
@@ -59,8 +58,8 @@ function FindSatellite() {
     );
   }
 
-  // Show loader until satellite position has been calculated
-  if (!satPosition) {
+  // Show loader until satellite position has been calculated and tracking status is available
+  if (satPosition.azimuth == 0) {
     return <Loader />;
   }
 
@@ -74,12 +73,12 @@ function FindSatellite() {
           >
             ← Back
           </Link>
-          <div
-            className="flex w-32 cursor-pointer items-center justify-center rounded-md border-2 border-white/50 bg-blue-600 py-1 font-medium hover:translate-y-[-2px]"
+
+          <Button
+            text={showTrackingData ? 'Hide Data' : 'Show Data'}
             onClick={() => setShowTrackingData(!showTrackingData)}
-          >
-            {showTrackingData ? 'Hide Data' : 'Show Data'}
-          </div>
+            bgColor='bg-primary-green'
+          />
         </div>
 
         {showTrackingData && (

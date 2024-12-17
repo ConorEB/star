@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
 import Input from '@/components/ui/input';
+import Link from '@/components/ui/link';
 
 export default function Home() {
   return (
@@ -14,9 +14,9 @@ export default function Home() {
         <p className="mt-3 text-white/80 md:mr-10">
           {`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location. Made by `}
 
-          <a href="https://conor.link" className="text-purple-400">
+          <Link href="https://conor.link" className="text-purple-400">
             Conor
-          </a>
+          </Link>
         </p>
 
         <div className="mt-3 text-blue-300">
@@ -57,12 +57,14 @@ export default function Home() {
           className="rounded-md border-2 border-white/80"
           width={200}
           height={150}
+          alt='Satellite image of the weather'
         />
         <Image
           src="/images/demo-ui.png"
           className="rounded-md border-2 border-white/80"
           width={150}
           height={150}
+          alt='Screenshot of the demo UI'
         />
       </div>
     </div>

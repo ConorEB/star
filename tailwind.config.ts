@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
+        'primary-blue': "#2463EB",
+        'primary-green': "#1fa95d"
       },
       fontFamily: {
         roobert: ['var(--font-roobert)'],

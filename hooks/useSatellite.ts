@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { calculateNextPass, predictSatellitePosition } from '@/lib/orbitPropagation';
 import { DeviceLocation, MotionData } from '@/types/oritentation';
 import { SatelliteData } from '@/types/satellite';
@@ -14,7 +14,7 @@ export function useSatellite(satelliteId: string) {
 
     // Fetch TLE data from the API
     useEffect(() => {
-        const fetchSatelliteData = useCallback(async () => {
+        const fetchSatelliteData = async () => {
             if (!satelliteId) return;
 
             try {
@@ -34,7 +34,7 @@ export function useSatellite(satelliteId: string) {
             } catch (err: any) {
                 setError(err.message);
             }
-        }, [satelliteId]);
+        };
 
         fetchSatelliteData();
     }, []);

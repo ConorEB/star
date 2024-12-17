@@ -17,7 +17,8 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } },
 ) {
-  const satelliteId = params.id
+  params = await params; // Ensure params are resolved before using them
+  const satelliteId = params.id;
 
   try {
     const url = `${baseURL}/tle/${satelliteId}&apiKey=${apiKey}`;
