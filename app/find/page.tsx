@@ -1,379 +1,132 @@
 'use client';
 
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { handleDeviceOrientation } from '@/lib/motion';
-import { calculateNextPass, predictSatellitePosition } from '@/lib/satellite';
-import DirectionGuide from '@/components/direction-guide';
+import { Suspense, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-import { useSearchParams } from 'next/navigation'
-import Link from 'next/link';
-import Image from 'next/image';
-import Loader from '@/components/loader';
+import { useSatellite } from '@/hooks/useSatellite';
+import { usePermissions } from '@/hooks/usePermissions';
+import { useMotion } from '@/hooks/useMotion';
+import { useTracking } from '@/hooks/useTracking';
 
-const initMotionData = {
-    location: { latitude: 0, longitude: 0, altitude: 0 },
-    gyroscope: { alpha: 0, beta: 0, gamma: 0 },
-    heading: 0
-};
+import { formatDate } from '@/lib/utils';
 
-const initSatData = {
-    name: '',
-    position: { azimuth: 0, elevation: 0 },
-    nextPass: null,
-    azimuthDifference: 0,
-    elevationDifference: 0,
-    tle: {
-        line1: '',
-        line2: ''
-    }
-};
-
-const initConnectionData = {
-    connected: false,
-    message: 'Please redirect your antenna.'
-}
+import ManualLocation from '@/components/manualLocation';
+import DirectionGuide from '@/components/directionGuide';
+import Loader from '@/components/ui/loader';
+import PermissionRequest from '@/components/permissionRequest';
+import Button from '@/components/ui/button';
+import Link from '@/components/ui/link';
+import ErrorPanel from '@/components/errorPanel';
 
 function FindSatellite() {
-    const searchParams = useSearchParams();
+  // Query params for satellite ID
+  const searchParams = useSearchParams();
+  const satelliteId = searchParams.get('satelliteId');
 
-    // Motion and location states
-    const [motionData, setMotionData] = useState<MotionData>(initMotionData);
-    const [manualLongitude, setManualLongitude] = useState<string | undefined>();
-    const [manualLatitude, setManualLatitude] = useState<string | undefined>();
-    const [locationError, setLocationError] = useState<string | null>(null);
+  // Local states
+  const [showTrackingData, setShowTrackingData] = useState(true);
 
-    // Connection state
-    const [error, setError] = useState<null | string>(null);
-    const [connectionData, setConnectionData] = useState<ConnectionData>(initConnectionData)
+  // Custom hooks
+  const { satData, error: satDataError } = useSatellite(satelliteId);
+  const {
+    permissionGranted,
+    requestPermission,
+    error: permissionError,
+  } = usePermissions();
+  const {
+    motionData,
+    error: locationError,
+    setError: setLocationError,
+    setManualLocation,
+  } = useMotion(permissionGranted);
+  const { trackingStatus, satPosition } = useTracking(
+    motionData,
+    satData,
+  );
 
-    // Permission states
-    const [permissionRequested, setPermissionRequested] = useState(false);
-    const [permissionGranted, setPermissionGranted] = useState(false);
-    const permissionRef = useRef(permissionGranted);
-    const errorRef = useRef(error);
+  // Display error UI for several possible errors that we can't recover from (I.E. user rejects permission to use motion data)
+  if (permissionError) return <ErrorPanel error={permissionError} />;
+  if (satDataError) return <ErrorPanel error={satDataError} />;
 
-    // Satellite data states
-    const [showData, setShowData] = useState(true);
-    const [satData, setSatData] = useState<SatelliteData>(initSatData);
-
-    // Fetch TLE data from the API
-    const fetchSatelliteData = useCallback(async () => {
-        const satelliteId = searchParams.get('satelliteId');
-
-        const response = await fetch(`/api/satellite/${satelliteId}`);
-        if (response.ok) {
-            const data = await response.json();
-            const tleLines = data.tle.split('\r\n'); // Split TLE into two lines
-
-            if (tleLines.length !== 2 || !data.info.satname) {
-                setError('Failed to fetch satellite data. Make sure the NORAD ID: ' + satelliteId + ' is correct.');
-                return;
-            }
-
-            setSatData((prevSatData: SatelliteData) => ({
-                ...prevSatData,
-                name: data.info.satname,
-                tle: { line1: tleLines[0], line2: tleLines[1] },
-            }));
-        } else {
-            setError('Failed to fetch satellite data. Make sure the NORAD ID: ' + satelliteId + ' is correct.');
-        }
-    }, [searchParams]);
-
-    // Update satellite position from TLE data every second
-    useEffect(() => {
-        if (
-            satData.tle?.line1 &&
-            motionData.location?.longitude !== 0
-        ) {
-            const intervalId = setInterval(() => {
-                const predictedPosition = predictSatellitePosition(
-                    satData.tle,
-                    motionData.location
-                );
-
-                setSatData((prevSatData: SatelliteData) => ({
-                    ...prevSatData,
-                    position: predictedPosition,
-                }));
-            }, 1000); // Update every second for smoother movement
-
-            // Calculate the next pass on initial load
-            const nextPass = calculateNextPass(satData.tle, motionData.location);
-            setSatData((prevSatData: SatelliteData) => ({
-                ...prevSatData,
-                nextPass,
-            }));
-
-            return () => clearInterval(intervalId);
-        }
-    }, [satData.tle, motionData.location]);
-
-    useEffect(() => {
-        permissionRef.current = permissionGranted;
-        errorRef.current = error;
-    }, [permissionGranted, error]);
-
-    // Request permission for device sensors and fetch TLE data once
-    useEffect(() => {
-        const requestPermission = async () => {
-            // @ts-expect-error It does exist
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                // @ts-expect-error It does exist
-                const permission = await DeviceOrientationEvent.requestPermission();
-                if (permission === 'granted') {
-                    setPermissionGranted(true);
-                    fetchSatelliteData(); // Fetch TLE data once after permission is granted
-                } else if (permission === 'denied') {
-                    setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
-                } else {
-                    setError('Failed to request permission for motion sensors.');
-                }
-            } else if (typeof DeviceOrientationEvent !== 'undefined') {
-                window.addEventListener('deviceorientation', (event) => {
-                    if (event.alpha != null && event.beta != null && event.gamma != null) {
-                        setPermissionGranted(true);
-                        fetchSatelliteData(); // Fetch TLE data once after permission is granted
-                    } else {
-                        setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
-                    }
-                }, { once: true });
-            } else {
-                setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
-            }
-        };
-
-        const permissionFlow = async () => {
-            // Run request permission function to try and get data
-            try {
-                await requestPermission();
-
-                // Wait 1 second after permission request to check if data is available
-                setTimeout(() => {
-                    if (!permissionRef.current && !errorRef.current) {
-                        setError("Please use a mobile device to access this feature. This device does not support motion sensors. If using a mobile device, try a different browser!");
-                    }
-                }, 1000);
-            } catch {
-                setError('Failed to request permission for motion sensors. Refresh the page or try a different browser.');
-            }
-        }
-
-        if (permissionRequested) {
-            permissionFlow();
-        }
-    }, [permissionRequested, fetchSatelliteData]);
-
-    // Add event listeners for device sensors
-    const handleDeviceOrientationEvent = (event: OrientationEvent) => handleDeviceOrientation(event, setMotionData);
-
-    useEffect(() => {
-        if (permissionGranted) {
-            // @ts-expect-error I'll fix later
-            window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
-
-            navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude, altitude } = position.coords;
-
-                // @ts-expect-error I'll fix this later
-                setMotionData((prevMotionData) => ({
-                    ...prevMotionData,
-                    location: { latitude, longitude, altitude }
-                }));
-            }, (error) => {
-                setLocationError(error.message);
-            }, { timeout: 10000, enableHighAccuracy: true, maximumAge: 0 });
-        }
-
-        return () => {
-            // @ts-expect-error I'll fix later
-            window.removeEventListener('deviceorientation', handleDeviceOrientationEvent);
-        };
-    }, [permissionGranted]);
-
-    // Compute azimuth and elevation differences, calc connection status
-    useEffect(() => {
-        if (satData.position && motionData.heading !== null && motionData.gyroscope.beta !== null) {
-            // Compute azimuth difference
-            let azDiff = satData.position.azimuth - motionData.heading;
-            if (azDiff > 180) azDiff -= 360;
-            if (azDiff < -180) azDiff += 360;
-
-            // Compute elevation difference
-            const elDiff = satData.position.elevation - motionData.gyroscope.beta;
-
-            setTimeout(() => {
-                setSatData((prevSatData: SatelliteData) => ({
-                    ...prevSatData,
-                    azimuthDifference: azDiff,
-                    elevationDifference: elDiff,
-                }));
-            }, 200);
-
-            // Check if the user is pointing at the satellite
-            if (Math.abs(azDiff) < 10 && Math.abs(elDiff) < 10) {
-                setConnectionData({ connected: true, message: 'Keep pointing at satellite.' });
-            } else if (satData.position.elevation < 0) {
-                setConnectionData({ connected: false, message: 'Satellite is below the horizon, check next pass.' });
-            } else {
-                let message = 'Move antenna';
-                const azThreshold = 15;
-                const elThreshold = 15;
-
-                const directions = [];
-
-                // Determine azimuth adjustment
-                if (azDiff > azThreshold) {
-                    directions.push('to the right');
-                } else if (azDiff < -azThreshold) {
-                    directions.push('to the left');
-                }
-
-                // Determine elevation adjustment
-                if (elDiff > elThreshold) {
-                    directions.push('up');
-                } else if (elDiff < -elThreshold) {
-                    directions.push('down');
-                }
-
-                // Build the final message
-                if (directions.length > 0) {
-                    message += ' ' + directions.join(' and ') + '.';
-                } else {
-                    message = 'Antenna is aligned.';
-                }
-
-                setConnectionData({ connected: false, message });
-            }
-        }
-    }, [satData.position, motionData.heading, motionData.gyroscope.beta]);
-
-    // Show error screen
-    if (error) {
-        return (
-            <div className='flex justify-center items-center h-dvh'>
-                <div className='md:w-1/2 px-8'>
-                    <p className='font-medium text-[25px]'>👎 There was an error.</p>
-                    <p className='text-white/80 mt-2'>{error}</p>
-                    <Link href={'/'} className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer hover:translate-y-[-2px] duration-150'>Try Again</Link>
-                </div>
-            </div>
-        )
-    }
-
-    // Show permission request UI if motion permission not allowed
-    if (!permissionGranted) {
-        return (
-            <div className='flex justify-center items-center h-dvh px-8'>
-                <div className='md:w-1/2'>
-                    <p className='font-medium text-[25px]'>🚀 Device Motion & Location Needed</p>
-                    <p className='text-white/80 mt-2'>{`I need to access your device's motion sensors like the gyroscope and location to be able to tell you where to point your phone (and antenna) at the satellite.`}</p>
-                    <div
-                        className='bg-blue-600 border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer hover:translate-y-[-2px] duration-150'
-                        onClick={() => setPermissionRequested(true)}
-
-                    >Continue</div>
-
-                    <p className='text-white/80 mt-6'>PS: After clicking the above button, your device will prompt you to confirm like the image below. Please press yes!</p>
-                    <Image priority={true} src='/motion-request.jpeg' width={250} height={250} className='rounded-md border-2 mt-4 border-white/80' alt='Motion Permission' />
-                </div>
-            </div>
-        )
-    }
-
-    if (locationError) {
-        return (
-            <div className='flex justify-center items-center h-dvh px-8'>
-                <div className='md:w-1/2'>
-                    <p className='font-medium text-[25px]'>🌎 Error accessing device location.</p>
-                    <p className='text-white/80 mt-2'>{`Please check that location permissions are enabled for this browser's settings. Otherwise manually input latitude & longitude values (reminder to include a negative sign if needed). Error: ${locationError}`}</p>
-
-                    <input
-                        className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
-                        type='text'
-                        inputMode='text'
-                        placeholder='Enter Latitude'
-                        value={manualLatitude}
-                        onChange={(e) => setManualLatitude(e.target.value)}
-                    />
-                    <input
-                        className='pl-2 h-12 mt-4 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
-                        type='text'
-                        inputMode='text'
-                        placeholder='Enter Longitude'
-                        value={manualLongitude}
-                        onChange={(e) => setManualLongitude(e.target.value)}
-                    />
-
-                    <div
-                        className='bg-[#1fa95d] border-2 mt-4 border-white/50 w-40 py-2 font-medium flex items-center justify-center rounded-md cursor-pointer'
-                        onClick={() => {
-                            setMotionData((prevMotionData) => ({
-                                ...prevMotionData,
-                                location: {
-                                    latitude: parseFloat(manualLatitude || '0'),
-                                    longitude: parseFloat(manualLongitude || '0'),
-                                    altitude: 0
-                                }
-                            }));
-
-                            setLocationError(null);
-                        }}
-                    >Submit location</div>
-                </div>
-            </div>
-        )
-    }
-
-    // If still calculating satellite poisition data
-    if (!satData.position || satData.position?.azimuth == 0) {
-        return (
-            <Loader />
-        )
-    }
-
+  // Show manual inputs for latitude/longitude if error fetching device location
+  if (locationError) {
     return (
-        <div className='flex flex-row h-dvh justify-center items-center px-8'>
-            <div>
-                <div className='flex gap-4'>
-                    <Link href={'/'} className='bg-gray-800 border-2 border-white/50 w-24 py-1 font-medium rounded-md flex items-center justify-center cursor-pointer hover:translate-y-[-2px] duration-150'>
-                        ← Back
-                    </Link>
-                    <div className='bg-blue-600 border-2 border-white/50 w-32 py-1 font-medium flex items-center justify-center rounded-md cursor-pointer hover:translate-y-[-2px] duration-150'
-                        onClick={() => setShowData(!showData)}
-                    >
-                        {showData ? 'Hide Data' : 'Show Data'}
-                    </div>
-                </div>
-
-                <div className={`${showData ? 'block' : 'hidden'}`}>
-                    <p className='text-[20px] font-semibold mt-6'>{satData.name}</p>
-                    <div>Next Pass: {satData.nextPass ? satData.nextPass.toLocaleString([], { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Calculating...'}</div>
-                    <p>Azimuth: {satData.position.azimuth.toFixed(2)}°</p>
-                    <p>Elevation: {satData.position.elevation.toFixed(2)}°</p>
-                    <p>Azimuth Difference: {satData.azimuthDifference.toFixed(1)}°</p>
-                    <p>Elevation Difference: {satData.elevationDifference.toFixed(1)}°</p>
-
-                    <div className='w-full h-[2px] bg-white/50 rounded-full mt-4' />
-                </div>
-
-                <div>
-                    <p className={`${connectionData.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}>{connectionData.connected ? 'CONNECTED' : 'LOST SIGNAL'}</p>
-                    <p className='pt-1'>{connectionData.message}</p>
-                </div>
-
-                <div className='flex items-center justify-center gap-10 mt-12'>
-                    <DirectionGuide satData={satData} />
-                </div>
-            </div>
-        </div>
+      <ManualLocation
+        error={locationError}
+        setError={setLocationError}
+        setManualLocation={setManualLocation}
+      />
     );
+  }
+
+  // If permission not granted, show permission request UI (if perrmison rejected, erorr will be returned above)
+  if (!permissionGranted) {
+    return (
+      <PermissionRequest requestPermission={requestPermission} />
+    );
+  }
+
+  // Show loader until tracking staus and satellite position have been calculated
+  if (!trackingStatus.nextPass || satPosition.azimuth === 0) {
+    return <Loader />;
+  }
+
+  return (
+    <div className="flex h-dvh flex-row items-center justify-center px-8">
+      <div className="w-full">
+        <div className="flex gap-4 items-center">
+          <Link
+            href="/"
+            className="flex py-2 mt-4 w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray font-medium"
+            animate
+          >
+            ← Back
+          </Link>
+
+          <Button
+            text={showTrackingData ? 'Hide Data' : 'Show Data'}
+            onClick={() => setShowTrackingData(!showTrackingData)}
+            className="bg-blue"
+          />
+        </div>
+
+        {showTrackingData && (
+          <>
+            <p className="mt-6 text-md font-semibold">
+              {satData.name}
+            </p>
+
+            <p>{`Next Pass: ${formatDate(trackingStatus.nextPass)}`}</p>
+
+            <p>Azimuth: {satPosition.azimuth.toFixed(2)}°</p>
+            <p>Elevation: {satPosition.elevation.toFixed(2)}°</p>
+            <p>{`Azimuth Difference: ${trackingStatus.azimuthDifference.toFixed(1)}°`}</p>
+            <p>{`Elevation Difference: ${trackingStatus.elevationDifference.toFixed(1)}°`}</p>
+
+            <div className="flex-grow mt-4 h-[2px] w-full rounded-full bg-light-gray" />
+          </>
+        )}
+
+        <div>
+          <p
+            className={`${trackingStatus.connected ? 'text-green-secondary' : 'text-red'} mt-4 font-medium`}
+          >
+            {trackingStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
+          </p>
+
+          <p className="pt-1">{trackingStatus.message}</p>
+        </div>
+
+        <DirectionGuide trackingStatus={trackingStatus} />
+      </div>
+    </div>
+  );
 }
 
 export default function Page() {
-    return (
-        <Suspense fallback={<Loader />}>
-            <FindSatellite />
-        </Suspense>
-    )
+  return (
+    <Suspense fallback={<Loader />}>
+      <FindSatellite />
+    </Suspense>
+  );
 }

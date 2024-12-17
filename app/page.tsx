@@ -1,41 +1,76 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/ui/image';
+import Link from '@/components/ui/link';
 
-export default function Home() {
+export default function Page() {
   return (
-    <div className='h-dvh flex flex-row justify-center items-center px-8'>
-      <div className='md:w-1/2'>
-        <p className='font-semibold text-[40px] w-full'>🛰️ STAR</p>
-        <p className='mt-3 text-[20px]'>Satellite Tracking and Alignment Resource</p>
-        <p className='mt-3 text-white/80 md:mr-10'>{`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location.`} Made by <a href="https://conor.link" className="text-purple-400">Conor</a></p>
+    <div className="flex h-dvh flex-row items-center justify-center px-8">
+      <div className="md:w-1/2">
+        <p className="w-full text-2xl font-semibold">🛰️ STAR</p>
+        <p className="mt-3 text-md">
+          Satellite Tracking and Alignment Resource
+        </p>
 
-        <div className='mt-3 text-blue-300'>
-          <Link href={"/find?satelliteId=25544"}>Try a demo with the ISS ➜</Link>
+        <p className="mt-3 text-white/80 md:mr-10">
+          {`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location. Made by `}
+
+          <Link href="https://conor.link" className="text-purple">
+            Conor
+          </Link>
+        </p>
+
+        <div className="mt-3 text-blue-secondary">
+          <Link href="/find?satelliteId=25544">
+            Try a demo with the ISS ➜
+          </Link>
         </div>
 
-        <form className='flex flex-wrap items-center gap-4 mt-5' action='/find' method='get'>
+        {/* Using html form here to keep it server side rendered */}
+        <form
+          className="mt-5 flex flex-wrap items-center gap-4"
+          action="/find"
+          method="get"
+        >
+          {/* Use normal input and other HTML tags for client rendered form (keeps it server side rendered) */}
           <input
-            className='pl-2 h-12 w-48 rounded-md text-white6 bg-gray-800 border-2 border-white/80 text-white'
-            type='text'
-            name='satelliteId'
-            inputMode='numeric'
-            placeholder='Enter NORAD ID'
+            className="h-12 w-48 rounded-md border-2 border-white/80 bg-dark-gray pl-2 text-white"
+            type="text"
+            placeholder="Enter NORAD ID"
+            inputMode="numeric"
             required
           />
           <button
-            type='submit'
-            className='bg-[#1fa95d] font-medium rounded-md w-48 h-12 flex justify-center items-center border-white/50 hover:border-white/90 border-2 hover:cursor-pointer hover:translate-y-[-2px] duration-150'
+            type="submit"
+            className="flex h-12 w-48 items-center justify-center rounded-md border-2 border-white/50 bg-[#1fa95d] font-medium duration-150 hover:translate-y-[-2px] hover:cursor-pointer hover:border-white/90"
           >
             Find Satellite ➜
           </button>
         </form>
 
-        <Link href={'/guide'} className='bg-black border-white/50 border-2 font-medium rounded-md w-48 h-12 mt-4 flex justify-center hover:border-white/80 items-center hover:cursor-pointer hover:translate-y-[-2px] duration-150'>User Guide</Link>
+        <Link
+          href="/guide"
+          className="mt-4 flex h-12 w-48 items-center justify-center rounded-md border-2 border-light-gray bg-black font-medium"
+          animate
+        >
+          User Guide
+        </Link>
       </div>
 
-      <div className='flex-row gap-6 hidden md:flex'>
-        <Image src={'/weather.png'} className='rounded-md border-2 border-white/80' width={200} height={150} alt='Antenna' />
-        <Image src={'/guide.png'} className='rounded-md border-2 border-white/80' width={150} height={150} alt='Antenna' />
+      {/* These images are hidden on mobile devices */}
+      <div className="hidden flex-row gap-6 md:flex">
+        <Image
+          src="/images/weather.png"
+          className="rounded-md border-2 border-white/80"
+          width={200}
+          height={150}
+          alt="Satellite image of the weather"
+        />
+        <Image
+          src="/images/demoUI.png"
+          className="rounded-md border-2 border-white/80"
+          width={150}
+          height={150}
+          alt="Screenshot of the demo UI"
+        />
       </div>
     </div>
   );

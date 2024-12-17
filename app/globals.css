@@ -7,29 +7,10 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 .triangle {
   width: 170px;
-  aspect-ratio: 1/cos(35deg);
-  clip-path: polygon(50% 100%,100% 30%,0% 30%);
+  aspect-ratio: 1 / cos(35deg);
+  clip-path: polygon(50% 100%, 100% 30%, 0% 30%);
 }
 
 .clip-path {
@@ -41,7 +22,8 @@ input::placeholder {
   opacity: 0.85; /* Firefox */
 }
 
-::-ms-input-placeholder { /* Edge 12 -18 */
+::-ms-input-placeholder {
+  /* Edge 12 -18 */
   color: white;
   opacity: 0.85;
 }

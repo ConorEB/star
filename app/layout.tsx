@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
-import localFont from "next/font/local";
-import "./globals.css";
+import { Analytics } from '@vercel/analytics/react';
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import './globals.css';
 
 const roobert = localFont({
-  src: '../public/fonts/roobert-variable.woff2',
+  src: '../public/fonts/roobert.woff2',
   variable: '--font-roobert',
   display: 'swap',
 });
@@ -12,19 +12,19 @@ const roobert = localFont({
 export const metadata: Metadata = {
   title: 'STAR',
   description: 'Satellite Tracking and Alignment Resource',
+  metadataBase: new URL('https://star.conor.link'),
   icons: {
-    icon: '../favicon.png',
+    icon: '../images/favicon.png',
   },
   robots: {
-    index: true
+    index: true,
   },
   openGraph: {
     title: 'STAR',
     description: `Satellite Tracking and Alignment Resource`,
-    url: 'https://star.conor.link',
     images: [
       {
-        url: 'https://star.conor.link/og.jpg',
+        url: '/og.jpg',
         width: 1200,
         height: 630,
       },
@@ -34,7 +34,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,11 +41,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${roobert.variable}`}>
-      <body
-        className={`bg-shapes bg-[#101012] font-roobert text-white`}      >
+      <body className="bg-[#101012] bg-shapes font-roobert text-white">
         {children}
         <Analytics />
       </body>
-    </html >
+    </html>
   );
 }

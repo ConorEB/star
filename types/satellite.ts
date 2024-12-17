@@ -1,42 +1,25 @@
-interface TleData {
+import { info } from "console";
+
+export interface TLE {
     line1: string;
     line2: string;
 }
 
-interface SatellitePosiiton {
+export interface SatellitePosition {
     azimuth: number;
     elevation: number;
 }
 
-interface SatelliteData {
+export interface SatelliteData {
     name: string;
-    position: SatellitePosiiton | null;
-    tle: TleData;
-    nextPass: Date | null;
-    azimuthDifference: number;
-    elevationDifference: number;
+    tle: TLE | null;
 }
 
-interface UserLocation {
-    latitude: number;
-    longitude: number;
-    altitude: number;
-}
-
-interface MotionData {
-    gyroscope: { alpha: number; beta: number; gamma: number };
-    heading: number;
-    location: UserLocation;
-}
-
-interface ConnectionData {
-    connected: boolean;
-    message: string;
-}
-
-interface OrientationEvent {
-    alpha: number;
-    beta: number;
-    gamma: number;
-    webkitCompassHeading: number
+export interface n2yoAPIResponse{
+    info: {
+        satid: number;
+        satname: string;
+        transactionscount: number;
+    };
+    tle: string;
 }
