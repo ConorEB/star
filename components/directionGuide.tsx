@@ -1,7 +1,7 @@
 import { translateElevation } from "@/lib/utils";
 import { TrackingStatus } from "@/types/oritentation";
 
-const DirectionGuide = ({ trackingStatus }: { trackingStatus: TrackingStatus }) => {
+function DirectionGuide ({ trackingStatus }: { trackingStatus: TrackingStatus }) {
   return (
     <>
       <div className="flex items-center justify-center">
@@ -19,7 +19,7 @@ const DirectionGuide = ({ trackingStatus }: { trackingStatus: TrackingStatus }) 
         </div>
 
         <div className="w-48 h-48 absolute">
-          <div className="w-full h-full border-b-4 border-l-4 border-r-4 border-[#00ff73] rounded-full shadow-2xl"
+          <div className="w-full h-full border-b-4 border-l-4 border-r-4 border-green-secondary rounded-full shadow-2xl"
             style={{
               clipPath: "polygon(50% 0%, 100% 100%, 33% 100%)",
               transform: "rotate(197deg)"
@@ -28,17 +28,17 @@ const DirectionGuide = ({ trackingStatus }: { trackingStatus: TrackingStatus }) 
         </div>
 
         <div className="border-4 border-light-gray rounded-full h-48 w-48 flex items-center justify-center overflow-clip">
-          <div className={`triangle bg-[#00ff73]/70 mb-40 animate-pulse border-4`}>
+          <div className={`triangle bg-green-secondary/70 mb-40 animate-pulse border-4`}>
           </div>
-          <div className='bg-[#00ff73] h-12 w-12 rounded-full absolute z-10 shadow-2xl'></div>
+          <div className='bg-green-secondary h-12 w-12 rounded-full absolute z-10 shadow-2xl'></div>
         </div>
       </div>
 
       <div className="flex flex-row items-center justify-center gap-4">
         <div className="border-2 border-dashed border-light-gray w-0 h-44 bg-transparent"></div>
-        <div className='w-4 rounded-sm bg-gray-400 absolute h-[2px]'></div>
+        <div className='w-4 rounded-sm bg-[#a3a3a3] absolute h-[2px]'></div>
         <div
-          className={`w-7 rounded-sm ${Math.abs(trackingStatus.elevationDifference) < 15 ? 'bg-[#00ff73]' : 'bg-red-500'} absolute h-1`}
+          className={`w-7 rounded-sm ${Math.abs(trackingStatus.elevationDifference) < 15 ? 'bg-green-secondary' : 'bg-red'} absolute h-1`}
           style={{
             translate: `0px ${translateElevation(trackingStatus.elevationDifference).toFixed(0)}px`,
           }}

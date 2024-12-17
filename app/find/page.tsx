@@ -1,33 +1,29 @@
 'use client';
 
-import Image from '@/components/ui/image';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
-import Link from '@/components/ui/link';
 
 import { useSatellite } from '@/hooks/useSatellite';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMotion } from '@/hooks/useMotion';
 import { useTracking } from '@/hooks/useTracking';
 
-import LocationError from '@/components/manualLocation';
-import Error from '@/components/error';
+import { formatDate } from '@/lib/utils';
+
 import ManualLocation from '@/components/manualLocation';
 import DirectionGuide from '@/components/directionGuide';
-import Input from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import PermissionRequest from '@/components/permissionRequest';
-import { formatDate } from '@/lib/utils';
 import Button from '@/components/ui/button';
+import Link from '@/components/ui/link';
+import ErrorPanel from '@/components/errorPanel';
 
 function FindSatellite() {
   // Query params for satellite ID
   const searchParams = useSearchParams();
   const satelliteId = searchParams.get('satelliteId');
 
-  // Error states
-  const [showManualLocation, setShowManualLocation] =
-    useState<boolean>(false);
+  // Local states
   const [showTrackingData, setShowTrackingData] = useState(true);
 
   // Custom hooks
@@ -49,12 +45,11 @@ function FindSatellite() {
   );
 
   // Display error UI for several possible errors that we can't recover from (I.E. user rejects permission to use motion data)
-  if (permissionError) return <Error error={permissionError} />;
-  if (satDataError) return <Error error={satDataError} />;
+  if (permissionError) return <ErrorPanel error={permissionError} />;
+  if (satDataError) return <ErrorPanel error={satDataError} />;
 
   // Show manual inputs for latitude/longitude if error fetching device location
-  // @TODO fix this
-  if (showManualLocation) {
+  if (locationError) {
     return (
       <ManualLocation
         error={locationError}
@@ -64,25 +59,25 @@ function FindSatellite() {
     );
   }
 
-  // If permission not granted, show permission request UI
+  // If permission not granted, show permission request UI (if perrmison rejected, erorr will be returned above)
   if (!permissionGranted) {
     return (
       <PermissionRequest requestPermission={requestPermission} />
     );
   }
 
-  // Show loader until satellite position has been calculated and tracking status is available
-  if (satPosition.azimuth == 0) {
+  // Show loader until tracking staus and satellite position have been calculated
+  if (!trackingStatus.nextPass || satPosition.azimuth == 0) {
     return <Loader />;
   }
 
   return (
     <div className="flex h-dvh flex-row items-center justify-center px-8">
-      <div>
-        <div className="flex gap-4">
+      <div className='w-full'>
+        <div className="flex gap-4 items-center">
           <Link
             href="/"
-            className="flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray py-1 font-medium"
+            className="flex py-2 mt-4 w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray font-medium"
             animate={true}
           >
             ← Back
@@ -91,7 +86,7 @@ function FindSatellite() {
           <Button
             text={showTrackingData ? 'Hide Data' : 'Show Data'}
             onClick={() => setShowTrackingData(!showTrackingData)}
-            bgColor="bg-green"
+            className="bg-blue"
           />
         </div>
 
@@ -101,38 +96,26 @@ function FindSatellite() {
               {satData.name}
             </p>
 
-            <div>
-              {'Next Pass: '}
-              {formatDate(trackingStatus.nextPass) ||
-                'Calculating...'}
-            </div>
+            <p>{`Next Pass: ${formatDate(trackingStatus.nextPass)}`}</p>
 
             <p>Azimuth: {satPosition.azimuth.toFixed(2)}°</p>
             <p>Elevation: {satPosition.elevation.toFixed(2)}°</p>
-            <p>
-              Azimuth Difference:{' '}
-              {trackingStatus.azimuthDifference.toFixed(1)}°
-            </p>
-            <p>
-              Elevation Difference:{' '}
-              {trackingStatus.elevationDifference.toFixed(1)}°
-            </p>
+            <p>{`Azimuth Difference: ${trackingStatus.azimuthDifference.toFixed(1)}°`}</p>
+            <p>{`Elevation Difference: ${trackingStatus.elevationDifference.toFixed(1)}°`}</p>
 
-            <div className="mt-4 h-[2px] w-full rounded-full bg-light-gray" />
+            <div className="flex-grow mt-4 h-[2px] w-full rounded-full bg-light-gray" />
           </>
         )}
 
         <div>
-          <p
-            className={`${trackingStatus.connected ? 'text-green-secondary' : 'text-red-500'} mt-4 font-medium`}
-          >
+          <p className={`${trackingStatus.connected ? 'text-green-secondary' : 'text-red'} mt-4 font-medium`}>
             {trackingStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
           </p>
 
           <p className="pt-1">{trackingStatus.message}</p>
         </div>
 
-        <div className="mt-12 flex items-center justify-center gap-10">
+        <div className="mt-8 flex items-center justify-center gap-10">
           <DirectionGuide trackingStatus={trackingStatus} />
         </div>
       </div>

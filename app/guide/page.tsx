@@ -1,13 +1,13 @@
 import Image from '@/components/ui/image';
 import Link from '@/components/ui/link';
 
-export default function Guide() {
+export default function Page() {
   return (
-    <div className="flex h-dvh w-full justify-center">
-      <div className="px-8 md:w-2/3">
+    <div className="flex h-dvh w-full justify-center px-8">
+      <div className=" md:w-2/3">
         <Link
           href="/"
-          className="mt-16 flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray py-1 font-medium"
+          className="mt-12 flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray py-1 font-medium"
           animate={true}
         >
           ← Back

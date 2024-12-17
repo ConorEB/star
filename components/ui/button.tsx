@@ -1,7 +1,7 @@
-export default function Button({ text, onClick, bgColor }) {
+export default function Button({ text, onClick, className }) {
   return (
     <div
-      className={`${bgColor} mt-4 flex w-40 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray py-2 font-medium hover:border-white/90 hover:translate-y-[-2px] duration-150`}
+      className={`mt-4 flex w-40 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray py-2 font-medium hover:border-white/90 hover:translate-y-[-2px] duration-150 ${className}`}
       onClick={onClick}
     >
       {text}

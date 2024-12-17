@@ -1,8 +1,7 @@
 import Image from '@/components/ui/image';
-import Input from '@/components/ui/input';
 import Link from '@/components/ui/link';
 
-export default function Home() {
+export default function Page() {
   return (
     <div className="flex h-dvh flex-row items-center justify-center px-8">
       <div className="md:w-1/2">

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export default function CustomImage({ src, className, width, height, alt }) {
+export default function CustomImage({ src, className, width, height, alt, priority }) {
     return (
         <Image
             src={src}
@@ -8,6 +8,7 @@ export default function CustomImage({ src, className, width, height, alt }) {
             width={width}
             height={height}
             alt={alt}
+            priority={priority}
         />
     );
 }

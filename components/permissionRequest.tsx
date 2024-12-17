@@ -12,7 +12,7 @@ export default function PermissionRequest({ requestPermission }) {
         <Button
           text="Continue"
           onClick={() => requestPermission()}
-          bgColor="bg-blue"
+          className="bg-blue"
         />
 
         <p className="mt-6 text-white/80">

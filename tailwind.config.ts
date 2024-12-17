@@ -16,6 +16,8 @@ const config: Config = {
       "dark-gray": "#1F2937",
       "light-gray": "#8F949B",
       "white": "#FFFFFF",
+      "black": "#000000",
+      "red": "#EF4444"
     },
     fontSize: {
       "sm": "15px",
@@ -36,4 +38,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;

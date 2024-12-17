@@ -1,6 +1,6 @@
 import Link from "./ui/link";
 
-export default function Error({ error }) {
+export default function ErrorPanel({ error }) {
   return (
     <div className="flex h-dvh items-center justify-center">
       <div className="px-8 md:w-1/2">
