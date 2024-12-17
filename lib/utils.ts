@@ -6,15 +6,15 @@
  * @returns The formatted date string or null if the date is null.
  */
 export function formatDate(date: Date | null): string | null {
-    if (!date) return null;
+  if (!date) return null;
 
-    return date.toLocaleString([], {
-        year: '2-digit',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+  return date.toLocaleString([], {
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 /**
@@ -24,7 +24,7 @@ export function formatDate(date: Date | null): string | null {
  * @returns The angle in degrees.
  */
 export const radiansToDegrees = (radians: number) => {
-    return radians * (180 / Math.PI);
+  return radians * (180 / Math.PI);
 };
 
 /**
@@ -34,7 +34,7 @@ export const radiansToDegrees = (radians: number) => {
  * @returns The translated elevation value (in correct pixel unit range)
  */
 export const translateElevation = (elevation: number) => {
-    if (elevation < 0) return (elevation / 1.4);
-    if (elevation > 0) return (elevation / 1.4);
-    return 0;
-}
+  if (elevation < 0) return elevation / 1.4;
+  if (elevation > 0) return elevation / 1.4;
+  return 0;
+};

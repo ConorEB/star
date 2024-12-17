@@ -9,7 +9,7 @@ export default function Page() {
         <Link
           href="/"
           className="mt-12 flex w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray py-1 font-medium"
-          animate={true}
+          animate
         >
           ← Back
         </Link>

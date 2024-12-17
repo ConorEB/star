@@ -1,7 +1,13 @@
 import Image from '@/components/ui/image';
 import Button from './ui/button';
 
-export default function PermissionRequest({ requestPermission }) {
+interface PermissionRequestProps {
+  requestPermission: () => void; // function passed from usePermissions.ts to request permission from web API
+}
+
+export default function PermissionRequest({
+  requestPermission,
+}: PermissionRequestProps) {
   return (
     <div className="flex h-dvh items-center justify-center px-8">
       <div className="md:w-1/2">

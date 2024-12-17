@@ -15,15 +15,16 @@ export function usePermissions() {
     const requestPermission = async () => {
         try {
             // Request permission if browser has the API
-            if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
-                const permission = await DeviceOrientationEvent.requestPermission();
+            if (typeof (DeviceOrientationEvent as any)?.requestPermission === 'function') {
+                const permission = await (DeviceOrientationEvent as any).requestPermission();
 
                 if (permission === 'granted') {
                     setPermissionGranted(true);
                 } else {
                     setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
                 }
-            } else {
+            }
+            else {
                 // For browsers that don't require explicit permissions (function doesn't exist in window)
                 window.addEventListener(
                     'deviceorientation',

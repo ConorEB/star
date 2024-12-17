@@ -73,12 +73,12 @@ function FindSatellite() {
 
   return (
     <div className="flex h-dvh flex-row items-center justify-center px-8">
-      <div className='w-full'>
+      <div className="w-full">
         <div className="flex gap-4 items-center">
           <Link
             href="/"
             className="flex py-2 mt-4 w-24 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray bg-dark-gray font-medium"
-            animate={true}
+            animate
           >
             ← Back
           </Link>
@@ -108,7 +108,9 @@ function FindSatellite() {
         )}
 
         <div>
-          <p className={`${trackingStatus.connected ? 'text-green-secondary' : 'text-red'} mt-4 font-medium`}>
+          <p
+            className={`${trackingStatus.connected ? 'text-green-secondary' : 'text-red'} mt-4 font-medium`}
+          >
             {trackingStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
           </p>
 

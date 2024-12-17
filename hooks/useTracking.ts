@@ -1,6 +1,6 @@
 import { calculateNextPass, predictSatellitePosition } from "@/lib/orbitPropagation";
-import { MotionData, TrackingStatus } from "@/types/oritentation";
-import { SatelliteData } from "@/types/satellite";
+import { DeviceLocation, MotionData, TrackingStatus } from "@/types/oritentation";
+import { SatelliteData, SatellitePosition } from "@/types/satellite";
 import { useEffect, useState } from "react";
 
 const initTrackingStatus: TrackingStatus = {
@@ -93,8 +93,10 @@ export function useTracking(motionData: MotionData, satData: SatelliteData) {
     useEffect(() => {
         const location: DeviceLocation = motionData.location;
 
-        if (satData.tle.line1 && location.longitude !== 0) {
+        if (satData.tle && location.longitude !== 0) {
             const intervalId = setInterval(() => {
+                if (!satData.tle) return; // exit if TLE data is not available
+
                 const predictedPosition = predictSatellitePosition(satData.tle, location);
                 setSatPosition(predictedPosition);
             }, 1000);

@@ -1,5 +1,17 @@
 {
-  "extends": ["airbnb", "airbnb/hooks", "plugin:prettier/recommended", "plugin:@next/next/recommended"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@next/next/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "plugins": ["react", "prettier"],
   "rules": {
     "prettier/prettier": "error",
@@ -10,12 +22,18 @@
     "react/jsx-uses-react": "off",
     "no-process-exit": "off",
     "object-shorthand": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "import/prefer-default-export": "off",
+    "import/extensions": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "react-hooks/rules-of-hooks": "off",
+    "@next/next/no-duplicate-head": "off"
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "moduleDirectory": ["node_modules", "src/"]
+        "moduleDirectory": ["node_modules", "src"]
       }
     }
   }

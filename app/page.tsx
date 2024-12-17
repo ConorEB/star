@@ -49,7 +49,7 @@ export default function Page() {
         <Link
           href="/guide"
           className="mt-4 flex h-12 w-48 items-center justify-center rounded-md border-2 border-light-gray bg-black font-medium"
-          animate={true}
+          animate
         >
           User Guide
         </Link>

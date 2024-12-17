@@ -1,6 +1,18 @@
 import Link from 'next/link';
 
-export default function CustomLink({ href, children, className, animate }) {
+interface CustomLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  animate?: boolean;
+}
+
+export default function CustomLink({
+  href,
+  children,
+  className,
+  animate,
+}: CustomLinkProps) {
   return (
     <Link
       href={href}

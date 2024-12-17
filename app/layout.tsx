@@ -12,7 +12,7 @@ const roobert = localFont({
 export const metadata: Metadata = {
   title: 'STAR',
   description: 'Satellite Tracking and Alignment Resource',
-  metadataBase: 'https://star.conor.link',
+  metadataBase: new URL('https://star.conor.link'),
   icons: {
     icon: '../images/favicon.png',
   },
