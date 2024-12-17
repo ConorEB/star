@@ -28,7 +28,7 @@ Before you begin, ensure you have the following:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/ConorEB/star`
+   git clone https://github.com/ConorEB/star
    cd star
    ```
 
@@ -55,13 +55,13 @@ yarn dev
 
 Once running, open http://localhost:3000 in your browser to view the application.
 
-This app only works on devices that supply motion data via the web API, which are typically only local devices. I reccomend using [NGROK](https://ngrok.com/) to establish a tunnel to a local device.
+This app only works on devices that supply motion data via the web API, which are typically only mobile devices. I reccomend using [ngrok](https://ngrok.com/) to establish a tunnel to a local device if you are running this on a computer.
 
 ## **Demo**
 
 <p float="left">
-  <img src="https://star.conor.link/images/demoUI.png" height="400" />
-  <img src="https://star.conor.link/images/inUse.png" height="400" /> 
+  <img src="./public/images/demoUI.png" height="400" />
+  <img src="./public/images//inUse.png" height="400" /> 
 </p>
 
 ---
