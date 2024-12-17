@@ -1,6 +1,6 @@
 import * as satellite from 'satellite.js';
-import { DeviceLocation } from '@/types/motionData';
-import { TLE } from '@/types/satelliteData';
+import { DeviceLocation } from '@/types/oritentation';
+import { TLE } from '@/types/satellite';
 import { radiansToDegrees } from './utils';
 
 export const predictSatellitePosition = (
@@ -32,7 +32,7 @@ export const predictSatellitePosition = (
 
 export const calculateNextPass = (
   tle: TleData,
-  observerCoords: UserLocation,
+  observerCoords: DeviceLocation,
 ): Date => {
   let passTime = new Date(); // Directly using a Date object
 
@@ -58,8 +58,6 @@ export const calculateNextPass = (
     };
 
     const lookAngles = satellite.ecfToLookAngles(observerGd, positionEcf);
-    //alert(lookAngles.elevation)
-
     if (lookAngles.elevation > 0) {
       return passTime;
     }

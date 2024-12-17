@@ -18,7 +18,7 @@ import Input from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import PermissionRequest from '@/components/permissionRequest';
 import { formatDate } from '@/lib/utils';
-import { useConnection } from '@/hooks/useConnection';
+import { useTracking } from '@/hooks/useTracking';
 
 function FindSatellite() {
   // Query params for satellite ID
@@ -27,33 +27,32 @@ function FindSatellite() {
 
   // Error states
   const [showManualLocation, setShowManualLocation] = useState<boolean>(false);
-
-  // Local states
-  const [showData, setShowData] = useState(true);
+  const [showTrackingData, setShowTrackingData] = useState(true);
 
   // Custom hooks
+  const { satData, error: satDataError } = useSatellite(satelliteId);
   const { permissionGranted, requestPermission, error: permissionError } = usePermissions();
 
-  const { motionData, error: locationError, setMotionData } = useMotion(permissionGranted);
+  const { motionData, error: locationError, setManualLocation } = useMotion(permissionGranted);
   if (locationError) { setShowManualLocation(true); } // if error with location fetch, show page to manually input location
 
-  const { satData, fetchSatelliteData, setSatData, error: satDataError } = useSatellite(
-    satelliteId,
-    motionData,
-    );
-
-  const { connectionStatus } = useConnection(motionData, satData, setSatData);
-
-  // Fetch satellite data on permission granted
-  useEffect(() => {
-    if (permissionGranted) {
-      fetchSatelliteData();
-    }
-  }, [permissionGranted]);
+  const { trackingStatus, satPosition } = useTracking(motionData, satData);
 
   // Display error UI for several possible errors that we can't recover from (I.E. user rejects permission to use motion data)
   if (permissionError) return <Error error={permissionError} />;
   if (satDataError) return <Error error={satDataError} />;
+
+  // Show manual inputs for latitude/longitude if error fetching device location
+  // @TODO fix this
+  if (showManualLocation) {
+    return (
+      <ManualLocation
+        error={locationError}
+        setManualLocation={setManualLocation}
+        setShowManualLocation={setShowManualLocation}
+      />
+    );
+  }
 
   // If permission not granted, show permission request UI
   if (!permissionGranted) {
@@ -62,19 +61,8 @@ function FindSatellite() {
     );
   }
 
-  // Show manual inputs for latitude/longitude if error fetching device location
-  if (showManualLocation) {
-    return (
-      <ManualLocation
-        error={locationError}
-        setMotionData={setMotionData}
-        setShowManualLocation={setShowManualLocation}
-      />
-    );
-  }
-
   // Show loader until satellite position has been calculated
-  if (!satData.position) {
+  if (!satPosition) {
     return <Loader />;
   }
 
@@ -90,36 +78,36 @@ function FindSatellite() {
           </Link>
           <div
             className="flex w-32 cursor-pointer items-center justify-center rounded-md border-2 border-white/50 bg-blue-600 py-1 font-medium hover:translate-y-[-2px]"
-            onClick={() => setShowData(!showData)}
+            onClick={() => setShowTrackingData(!showTrackingData)}
           >
-            {showData ? 'Hide Data' : 'Show Data'}
+            {showTrackingData ? 'Hide Data' : 'Show Data'}
           </div>
         </div>
 
-        {showData && (
+        {showTrackingData && (
           <>
             <p className="mt-6 text-[20px] font-semibold">{satData.name}</p>
 
             <div>
               {'Next Pass: '}
-              {formatDate(satData.nextPass) || 'Calculating...'}
+              {formatDate(trackingStatus.nextPass) || 'Calculating...'}
             </div>
 
-            <p>Azimuth: {satData.position.azimuth.toFixed(2)}°</p>
-            <p>Elevation: {satData.position.elevation.toFixed(2)}°</p>
-            <p>Azimuth Difference: {satData.azimuthDifference.toFixed(1)}°</p>
-            <p>Elevation Difference: {satData.elevationDifference.toFixed(1)}°</p>
+            <p>Azimuth: {satPosition.azimuth.toFixed(2)}°</p>
+            <p>Elevation: {satPosition.elevation.toFixed(2)}°</p>
+            <p>Azimuth Difference: {trackingStatus.azimuthDifference.toFixed(1)}°</p>
+            <p>Elevation Difference: {trackingStatus.elevationDifference.toFixed(1)}°</p>
 
             <div className="mt-4 h-[2px] w-full rounded-full bg-white/50" />
           </>
         )}
 
         <div>
-          <p className={`${connectionStatus.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}>
-            {connectionStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
+          <p className={`${trackingStatus.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}>
+            {trackingStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
           </p>
 
-          <p className="pt-1">{connectionStatus.message}</p>
+          <p className="pt-1">{trackingStatus.message}</p>
         </div>
 
         <div className="mt-12 flex items-center justify-center gap-10">

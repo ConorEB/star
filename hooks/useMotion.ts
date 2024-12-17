@@ -1,4 +1,4 @@
-import { MotionData } from '@/types/motionData';
+import { MotionData } from '@/types/oritentation';
 import { useState, useEffect } from 'react';
 
 export function useMotion(permissionGranted: boolean) {
@@ -9,7 +9,14 @@ export function useMotion(permissionGranted: boolean) {
     });
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {        
+    const setManualLocation = (latitude, longitude) => {
+        setMotionData((prev) => ({
+            ...prev,
+            location: { latitude, longitude, altitude: 0 },
+        }));
+    };
+
+    useEffect(() => {
         if (!permissionGranted) return;
 
         const handleDeviceOrientation = (event: DeviceOrientationEvent) => {

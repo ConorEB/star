@@ -10,9 +10,5 @@ export interface SatellitePosition {
 
 export interface SatelliteData {
     name: string;
-    position: SatellitePosition | null;
-    nextPass: Date | null;
-    azimuthDifference: number;
-    elevationDifference: number;
-    tle: TLE;
+    tle: TLE | null;
 }
