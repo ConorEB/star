@@ -1,9 +1,7 @@
-import Image from "next/image";
-import Button from "./ui/button";
+import Image from 'next/image';
+import Button from './ui/button';
 
-export default function PermissionRequest({
-  requestPermission,
-}) {
+export default function PermissionRequest({ requestPermission }) {
   return (
     <div className="flex h-dvh items-center justify-center px-8">
       <div className="md:w-1/2">
@@ -18,11 +16,11 @@ export default function PermissionRequest({
         />
 
         <p className="mt-6 text-white/80">
-          PS: After clicking the above button, your device will prompt you to
-          confirm like the image below. Please press yes!
+          PS: After clicking the above button, your device will prompt
+          you to confirm like the image below. Please press yes!
         </p>
         <Image
-          priority={true}
+          priority
           src="/images/motion-request.png"
           width={250}
           height={250}

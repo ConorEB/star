@@ -31,7 +31,7 @@ export default function Guide() {
             className="rounded-md border-2 border-white/80"
             width={200}
             height={200}
-            alt='Satellite image of the weather'
+            alt="Satellite image of the weather"
           />
           <Image
             src="/images/in-use.png"
@@ -64,7 +64,7 @@ export default function Guide() {
           className="mt-4 rounded-md border-2 border-white/80"
           width={175}
           height={175}
-          alt='Screenshot of the demo UI'
+          alt="Screenshot of the demo UI"
         />
 
         <p className="pt-4">{`That's it! Hold your device on the same plane as your antenna to align it with the satellite. I personally use a handheld yagi and a iPhone MagSafe magnet clamp that allows me to get precise results without having to hold both the antenna and phone.`}</p>
@@ -85,9 +85,16 @@ export default function Guide() {
         <div className="mb-1 mt-8 h-[2px] w-40 rounded-full bg-white/30" />
         <p className="pb-12 pt-2">
           Made by
-          <Link href='https://conor.link' className={'text-purple-400'}>{' Conor Ebeling'}</Link>
+          <Link href="https://conor.link" className="text-purple-400">
+            {' Conor Ebeling'}
+          </Link>
           . You can contact me at
-          <Link href='mailto:hey@conor.link' className="text-blue-300">{' hey@conor.link'}</Link>
+          <Link
+            href="mailto:hey@conor.link"
+            className="text-blue-300"
+          >
+            {' hey@conor.link'}
+          </Link>
         </p>
       </div>
     </div>

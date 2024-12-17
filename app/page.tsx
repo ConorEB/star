@@ -57,14 +57,14 @@ export default function Home() {
           className="rounded-md border-2 border-white/80"
           width={200}
           height={150}
-          alt='Satellite image of the weather'
+          alt="Satellite image of the weather"
         />
         <Image
           src="/images/demo-ui.png"
           className="rounded-md border-2 border-white/80"
           width={150}
           height={150}
-          alt='Screenshot of the demo UI'
+          alt="Screenshot of the demo UI"
         />
       </div>
     </div>

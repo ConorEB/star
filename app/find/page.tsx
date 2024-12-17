@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import Link from '@/components/ui/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import Link from '@/components/ui/link';
 
 import { useSatellite } from '@/hooks/useSatellite';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -26,14 +26,27 @@ function FindSatellite() {
   const satelliteId = searchParams.get('satelliteId');
 
   // Error states
-  const [showManualLocation, setShowManualLocation] = useState<boolean>(false);
+  const [showManualLocation, setShowManualLocation] =
+    useState<boolean>(false);
   const [showTrackingData, setShowTrackingData] = useState(true);
 
   // Custom hooks
   const { satData, error: satDataError } = useSatellite(satelliteId);
-  const { permissionGranted, requestPermission, error: permissionError } = usePermissions();
-  const { motionData, error: locationError, setError: setLocationError, setManualLocation } = useMotion(permissionGranted);
-  const { trackingStatus, satPosition } = useTracking(motionData, satData);
+  const {
+    permissionGranted,
+    requestPermission,
+    error: permissionError,
+  } = usePermissions();
+  const {
+    motionData,
+    error: locationError,
+    setError: setLocationError,
+    setManualLocation,
+  } = useMotion(permissionGranted);
+  const { trackingStatus, satPosition } = useTracking(
+    motionData,
+    satData,
+  );
 
   // Display error UI for several possible errors that we can't recover from (I.E. user rejects permission to use motion data)
   if (permissionError) return <Error error={permissionError} />;
@@ -77,30 +90,41 @@ function FindSatellite() {
           <Button
             text={showTrackingData ? 'Hide Data' : 'Show Data'}
             onClick={() => setShowTrackingData(!showTrackingData)}
-            bgColor='bg-primary-green'
+            bgColor="bg-primary-green"
           />
         </div>
 
         {showTrackingData && (
           <>
-            <p className="mt-6 text-[20px] font-semibold">{satData.name}</p>
+            <p className="mt-6 text-[20px] font-semibold">
+              {satData.name}
+            </p>
 
             <div>
               {'Next Pass: '}
-              {formatDate(trackingStatus.nextPass) || 'Calculating...'}
+              {formatDate(trackingStatus.nextPass) ||
+                'Calculating...'}
             </div>
 
             <p>Azimuth: {satPosition.azimuth.toFixed(2)}°</p>
             <p>Elevation: {satPosition.elevation.toFixed(2)}°</p>
-            <p>Azimuth Difference: {trackingStatus.azimuthDifference.toFixed(1)}°</p>
-            <p>Elevation Difference: {trackingStatus.elevationDifference.toFixed(1)}°</p>
+            <p>
+              Azimuth Difference:{' '}
+              {trackingStatus.azimuthDifference.toFixed(1)}°
+            </p>
+            <p>
+              Elevation Difference:{' '}
+              {trackingStatus.elevationDifference.toFixed(1)}°
+            </p>
 
             <div className="mt-4 h-[2px] w-full rounded-full bg-white/50" />
           </>
         )}
 
         <div>
-          <p className={`${trackingStatus.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}>
+          <p
+            className={`${trackingStatus.connected ? 'text-[#00ff73]' : 'text-red-500'} mt-4 font-medium`}
+          >
             {trackingStatus.connected ? 'CONNECTED' : 'LOST SIGNAL'}
           </p>
 
