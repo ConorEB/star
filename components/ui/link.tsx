@@ -10,8 +10,8 @@ interface CustomLinkProps {
 export default function CustomLink({
   href,
   children,
-  className,
-  animate,
+  className = '', // default value is an empty string since no extra styles are being applied
+  animate = false,
 }: CustomLinkProps) {
   return (
     <Link

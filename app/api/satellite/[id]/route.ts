@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { n2yoAPIResponse } from '@/types/satellite';
 
 const apiKey = process.env.N2YO_API_KEY;
 const baseURL = 'https://api.n2yo.com/rest/v1/satellite';
@@ -11,9 +11,11 @@ const baseURL = 'https://api.n2yo.com/rest/v1/satellite';
  *
  * @throws Will throw an error if the fetch request fails or if the TLE data is invalid.
  */
-export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl;
-  const satelliteId = searchParams.get('id');
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const satelliteId = (await params).id;
 
   try {
     const url = `${baseURL}/tle/${satelliteId}&apiKey=${apiKey}`;
@@ -23,7 +25,8 @@ export async function GET(request: NextRequest) {
       throw new Error('Failed to fetch TLE data');
     }
 
-    const data: { info?: { satid?: number } } = await response.json();
+    const data: n2yoAPIResponse =
+      (await response.json()) as n2yoAPIResponse;
 
     // Validate TLE data
     if (!data.info?.satid) {
@@ -31,9 +34,11 @@ export async function GET(request: NextRequest) {
     }
 
     return Response.json(data); // Return TLE data
-  } catch (error: ) {
+  } catch (error) {
     return Response.json(
-      { error: `Failed to fetch TLE data: ${error}` },
+      {
+        error: `Failed to fetch TLE data: ${(error as Error).message}`,
+      },
       { status: 500 },
     );
   }

@@ -15,7 +15,7 @@ export default function CustomImage({
   width,
   height,
   alt,
-  priority,
+  priority = false,
 }: CustomImageProps) {
   return (
     <Image

@@ -67,7 +67,7 @@ function FindSatellite() {
   }
 
   // Show loader until tracking staus and satellite position have been calculated
-  if (!trackingStatus.nextPass || satPosition.azimuth == 0) {
+  if (!trackingStatus.nextPass || satPosition.azimuth === 0) {
     return <Loader />;
   }
 

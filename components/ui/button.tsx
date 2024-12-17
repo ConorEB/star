@@ -1,6 +1,6 @@
 interface ButtonProps {
   text: string;
-  onClick: () => void;
+  onClick: () => void | Promise<void>;
   className: string;
 }
 
@@ -10,11 +10,15 @@ export default function Button({
   className,
 }: ButtonProps) {
   return (
-    <div
+    <button
       className={`mt-4 flex w-40 cursor-pointer items-center justify-center rounded-md border-2 border-light-gray py-2 font-medium hover:border-white/90 hover:translate-y-[-2px] duration-150 ${className}`}
-      onClick={onClick}
+      onClick={() => {
+        /* eslint-disable-next-line no-void */
+        void onClick(); // Explicitly ignoring the Promise return
+      }}
+      type="button"
     >
       {text}
-    </div>
+    </button>
   );
 }

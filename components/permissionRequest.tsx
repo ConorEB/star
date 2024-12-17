@@ -2,7 +2,7 @@ import Image from '@/components/ui/image';
 import Button from './ui/button';
 
 interface PermissionRequestProps {
-  requestPermission: () => void; // function passed from usePermissions.ts to request permission from web API
+  requestPermission: () => Promise<void>; // function passed from usePermissions.ts to request permission from web API
 }
 
 export default function PermissionRequest({

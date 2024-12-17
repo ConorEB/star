@@ -28,7 +28,8 @@
     "@typescript-eslint/lines-between-class-members": "off",
     "@typescript-eslint/no-throw-literal": "off",
     "react-hooks/rules-of-hooks": "off",
-    "@next/next/no-duplicate-head": "off"
+    "@next/next/no-duplicate-head": "off",
+    "react/require-default-props": "off"
   },
   "settings": {
     "import/resolver": {
