@@ -8,7 +8,7 @@ const initMotionData: MotionData = {
 }
 
 /**
- * Hook to handle device oritnetation events and geolocation data and updating their state
+ * Hook to handle device orientation events and geolocation data and updating their state
  *
  * @param {boolean} motionPermissionGranted - Flag indicating if motion permission has been granted.
  * @returns {object} - An object containing motion data, error state, and functions to set error and manual location.

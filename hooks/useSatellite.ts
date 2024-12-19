@@ -21,7 +21,7 @@ export function useSatellite(satelliteId: string | null) {
     useEffect(() => {
         const fetchSatelliteData = async () => {
             if (!satelliteId) {
-                // If no satellite ID, set an error message and return earlu
+                // If no satellite ID, set an error message and return early
                 setError("No satellite ID provided. Try refreshing the page."); // NOTE: this should never happen unless a user modifies the URL
                 return;
             }

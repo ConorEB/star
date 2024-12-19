@@ -1,5 +1,3 @@
-import { SatellitePosition } from "./satellite";
-
 export interface DeviceLocation {
     latitude: number;
     longitude: number;

@@ -15,7 +15,7 @@ export interface SatelliteData {
     tle: TLE | null;
 }
 
-export interface n2yoAPIResponse{
+export interface N2YOAPIResponse {
     info: {
         satid: number;
         satname: string;

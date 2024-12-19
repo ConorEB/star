@@ -45,9 +45,9 @@ export const predictSatellitePosition = (
 
 /**
  * Calculates the next pass of a satellite given its TLE data and the observer's coordinates.
- * This is done by effectively looping through 48h of simulated time in 30-second intervals and find when the satellite has a relative elevation angle greater than 0 degrees.
+ * This is done by effectively looping through 48h of simulated time in 30-second intervals to find when the satellite has a relative elevation angle greater than 0 degrees.
  *
- * @param {TleData} tle - The TLE data of the satellite, containing two lines of orbital elements. See more: https://en.wikipedia.org/wiki/Two-line_element_set
+ * @param {TLE} tle - The TLE data of the satellite, containing two lines of orbital elements. See more: https://en.wikipedia.org/wiki/Two-line_element_set
  * @param {DeviceLocation} observerCoords - The geographic coordinates of the observer, including longitude, latitude, and altitude.
  * @returns {Date} The predicted date and time of the next pass of the satellite.
  */

@@ -1,4 +1,4 @@
-import { n2yoAPIResponse } from '@/types/satellite';
+import { N2YOAPIResponse } from '@/types/satellite';
 
 const apiKey = process.env.N2YO_API_KEY;
 const baseURL = 'https://api.n2yo.com/rest/v1/satellite';
@@ -25,8 +25,8 @@ export async function GET(
       throw new Error('Failed to fetch TLE data');
     }
 
-    const data: n2yoAPIResponse =
-      (await response.json()) as n2yoAPIResponse;
+    const data: N2YOAPIResponse =
+      (await response.json()) as N2YOAPIResponse;
 
     // Validate TLE data
     if (!data.info?.satid) {
