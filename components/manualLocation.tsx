@@ -27,7 +27,7 @@ export default function ManualLocation({
           longitude. Error: {error}
         </p>
 
-        <div className='flex flex-col gap-2 mt-2'>
+        <div className="flex flex-col gap-2 mt-2">
           <Input
             placeholder="Enter Latitude"
             onChange={(e) => setLatitude(e.target.value)}

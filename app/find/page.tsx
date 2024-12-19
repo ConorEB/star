@@ -59,7 +59,7 @@ function FindSatellite() {
     );
   }
 
-  // If permission not granted, show permission request UI (if perrmison rejected, erorr will be returned above)
+  // If permission not granted, show permission request UI (if perrmison rejected, error will be returned above)
   if (!permissionGranted) {
     return (
       <PermissionRequest requestPermission={requestPermission} />

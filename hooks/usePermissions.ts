@@ -15,18 +15,15 @@ export function usePermissions() {
     const requestPermission = async () => {
         // Request permission if browser has the API
         if (typeof (DeviceOrientationEvent as any)?.requestPermission === 'function') {
-            let permission: PermissionState;
-            
-            try {
-                permission = await (DeviceOrientationEvent as any).requestPermission();
-            } catch {
-                setError('Failed to request permission for motion sensors. Refresh the page or try a different browser.');
-            }
 
-            if (permission === 'granted') {
-                setPermissionGranted(true);
-            } else {
-                setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
+            try {
+                const permission = await (DeviceOrientationEvent as any).requestPermission();
+
+                if (permission === 'granted') setPermissionGranted(true);
+                else setError('Permission for motion sensors was denied. Please allow access in browser settings to continue.');
+            } catch {
+                // BUG: some handlers gracefully fail the requestPermission method, some do not
+                setError('Failed to request permission for motion sensors. Refresh the page or try a different browser.');
             }
         }
         else {
