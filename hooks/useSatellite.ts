@@ -28,13 +28,13 @@ export function useSatellite(satelliteId: string | null) {
 
             try {
                 const response = await fetch(`/api/satellite/${satelliteId}`);
-                if (!response.ok) setError('Failed to fetch satellite data.');
+                if (!response.ok) throw new Error('Failed to fetch satellite data.');
 
                 // Parse response data and check for valid TLE data
                 const data = await response.json();
                 const tleLines = data.tle.split('\r\n');
                 if (tleLines.length !== 2 || !data.info.satname) {
-                    setError('Invalid TLE data.');
+                    throw new Error('Invalid TLE data.');
                 }
 
                 setSatData({

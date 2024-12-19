@@ -28,23 +28,23 @@ export function useTracking(motionData: MotionData, satData: SatelliteData) {
     const [trackingStatus, setTrackingStatus] = useState<TrackingStatus>(initTrackingStatus);
     const [satPosition, setSatPosition] = useState<SatellitePosition>(initSatellitePosition);
 
-    // Calculate azimuth/elevation differenced
+    // Calculate azimuth/elevation differences
     useEffect(() => {
-        if (satPosition && motionData.heading && motionData.gyroscope.beta) {
-            let azDiff = satPosition.azimuth - motionData.heading;
-            if (azDiff > 180) azDiff -= 360; // normalize to -180 to 180 for vertical axis
-            if (azDiff < -180) azDiff += 360;
+        // Exit if satellite position or device orientation data is not available
+        if (!satPosition || !motionData.heading || !motionData.gyroscope.beta) return;
 
-            const elDiff = satPosition.elevation - (motionData.gyroscope.beta ?? 0);
+        const elDiff = satPosition.elevation - (motionData.gyroscope.beta ?? 0);
+        let azDiff = satPosition.azimuth - motionData.heading;
+        if (azDiff > 180) azDiff -= 360; // normalize to -180 to 180 for vertical axis
+        if (azDiff < -180) azDiff += 360;
 
-            setTimeout(() => {
-                setTrackingStatus((prev) => ({
-                    ...prev,
-                    azimuthDifference: azDiff,
-                    elevationDifference: elDiff,
-                }));
-            }, 200); // delay to prevent bug for server side rendered components, need to investigate further
-        }
+        setTimeout(() => {
+            setTrackingStatus((prev) => ({
+                ...prev,
+                azimuthDifference: azDiff,
+                elevationDifference: elDiff,
+            }));
+        }, 200); // delay to prevent bug for server side rendered components, need to investigate further
     }, [satPosition, motionData.heading, motionData.gyroscope.beta]);
 
     // Update dynamic connection status message
@@ -52,20 +52,26 @@ export function useTracking(motionData: MotionData, satData: SatelliteData) {
         const azDiff = trackingStatus.azimuthDifference;
         const elDiff = trackingStatus.elevationDifference;
 
+        // If azimuth and elevation differences are within 10 degrees, this means the antenna is aligned/connected
         if (Math.abs(azDiff) < 10 && Math.abs(elDiff) < 10) {
             setTrackingStatus((prev) => ({
                 ...prev,
                 connected: true,
                 message: 'Keep pointing at satellite.',
             }));
-        } else if (satPosition.elevation < 0) {
+
+            return;
+        }
+
+        // If satellite is less than 0 degrees elevation, it is below the horizon
+        if (satPosition.elevation < 0) {
             setTrackingStatus((prev) => ({
                 ...prev,
                 connected: false,
                 message: 'Satellite is below the horizon, check next pass.',
             }));
         } else {
-            // Generate device orientation message based on current azimuth/elevation differences
+            // Device is above the horizon but not aligned, generate message based on azimuth and elevation differences
             let message = 'Move antenna'; // base message
             const directions: string[] = [];
 

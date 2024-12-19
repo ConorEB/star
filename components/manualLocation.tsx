@@ -12,7 +12,7 @@ export default function ManualLocation({
   error,
   setError,
   setManualLocation,
-}: ManualLocationProps) {
+}: Readonly<ManualLocationProps>) {
   const [latitude, setLatitude] = useState<string | undefined>();
   const [longitude, setLongitude] = useState<string | undefined>();
 
@@ -27,14 +27,16 @@ export default function ManualLocation({
           longitude. Error: {error}
         </p>
 
-        <Input
-          placeholder="Enter Latitude"
-          onChange={(e) => setLatitude(e.target.value)}
-        />
-        <Input
-          placeholder="Enter Longitude"
-          onChange={(e) => setLongitude(e.target.value)}
-        />
+        <div className='flex flex-col gap-2 mt-2'>
+          <Input
+            placeholder="Enter Latitude"
+            onChange={(e) => setLatitude(e.target.value)}
+          />
+          <Input
+            placeholder="Enter Longitude"
+            onChange={(e) => setLongitude(e.target.value)}
+          />
+        </div>
 
         <Button
           text="Submit Location"
