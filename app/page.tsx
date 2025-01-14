@@ -11,10 +11,13 @@ export default function Page() {
         </p>
 
         <p className="mt-3 text-white/80 md:mr-10">
-          {`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location. Made by `}
+          {`A easy to use web app to align your antenna with any satellite using your phone's motion sensors and location. View the code on `}
 
-          <Link href="https://conor.link" className="text-purple">
-            Conor
+          <Link
+            href="https://github.com/ConorEB/star"
+            className="text-purple"
+          >
+            GitHub
           </Link>
         </p>
 
