@@ -39,6 +39,7 @@ export default function Page() {
             type="text"
             placeholder="Enter NORAD ID"
             inputMode="numeric"
+            name="satelliteId"
             required
           />
           <button
